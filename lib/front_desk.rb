@@ -1,10 +1,10 @@
 require 'date'
 
 require_relative 'reservation'
-require_relative 'front_desk'
+require_relative 'room'
 
 module Hotel
-  class Room
+  class FrontDesk
     attr_reader
     attr_accessor
 
