@@ -26,7 +26,7 @@ module Hotel
       @total_reservation_cost = calculate_reservation_price
 
 
-      if (@start_date.to_time.to_i - @end_date.to_time.to_i) > MIN_RES_IN_SEC || @start_date.to_time.to_i < Time.now.to_i
+      if (@end_date.to_time.to_i - @start_date.to_time.to_i) < MIN_RES_IN_SEC || @start_date.to_time.to_i < Time.now.to_i
         raise StandardError.new("A reservation's end date must come after its start date, and it must be at least one night long.")
       end
     end
@@ -41,11 +41,12 @@ module Hotel
     end
 
     def calculate_total_nights
-      (@start_date.to_date - @end_date.to_date).to_i
+      (@end_date.to_date - @start_date.to_date).to_i
     end
 
     def calculate_reservation_price
-      (@total_nights * PER_NIGHT_PRICE).round(2)
+      #I know this isn't exactly best practice for dealing with real-world currency.  But since we haven't covered that yet and this isn't the real world, this is what I'm going with.
+       (@total_nights * PER_NIGHT_PRICE).round(2)
     end
   end
 end

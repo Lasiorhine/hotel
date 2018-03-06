@@ -1,4 +1,5 @@
 require 'date'
+require 'pry'
 require_relative 'spec_helper'
 
 describe "Reservation class" do
@@ -70,7 +71,7 @@ describe "Reservation class" do
   describe "calculate_reservation_price" do
     it "returns a float rounded to two decimal places" do
       @reservation_0_nominal_6n.calculate_reservation_price.must_be_kind_of Float
-      @reservation_0_nominal_6n.calculate_reservation_price.to_s.must_match /^\d+\.\d{2}$/
+      @reservation_0_nominal_6n.calculate_reservation_price.to_s.must_match /^\d+\.\d{1,2}$/
     end
 
     it "accurately returns the product of the room's per-day price and the length (in days) of the reservation" do
