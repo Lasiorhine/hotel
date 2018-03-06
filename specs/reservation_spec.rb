@@ -35,30 +35,28 @@ describe "Reservation class" do
       early_end = '1st May 3075'
       proc{ Hotel::Reservation.new(late_start, early_end) }.must_raise StandardError
     end
-
-    it "has a unique, six-digit ID number that is one higher than the next-highest ID number" do
-      @reservation_2_id_check.id.to_i.must_equal 1 + @reservation_1_id_check.id.to_i
-      @reservation_3_id_check.id.to_i.must_equal 2 + @reservation_1_id_check.id.to_i
-    end
-
   end
 
-  describe "calculate_cumulative_price" do
-
-    it "returns a float rounded to two decimal places" do
-      @reservation_0_nominal.calculate_cumulative_price.must_be_kind_of Float
-      @reservation_0_nominal.calculate_cumulative_price.to_s.must_match /^\d+\.\d{2}$/
-    end
-
-    it "accurately returns the product of the room's per-day price and the length (in days) of the reservation" do
-      @reservation_0_nominal.calculate_cumulative_price.must_be_within_delta 600.00, 0.003
-    end
+  # describe "calculate_cumulative_price" do
+  #   it "returns a float rounded to two decimal places" do
+  #     @reservation_0_nominal.calculate_cumulative_price.must_be_kind_of Float
+  #     @reservation_0_nominal.calculate_cumulative_price.to_s.must_match /^\d+\.\d{2}$/
+  #   end
+  #
+  #   it "accurately returns the product of the room's per-day price and the length (in days) of the reservation" do
+  #     @reservation_0_nominal.calculate_cumulative_price.must_be_within_delta 600.00, 0.003
+  #   end
+  # end
 
   describe "assign_id" do
     it "creates an eight-digit id" do
       @reservation_0_nominal.id.to_s.must_match /^\d{8}$/
-
+      @reservation_3_id_check.id.to_s.must_match /^\d{8}$/
     end
-  end
+
+    it "generates an ID number that is one higher than the next-highest ID number" do
+      @reservation_2_id_check.id.to_i.must_equal 1 + @reservation_1_id_check.id.to_i
+      @reservation_3_id_check.id.to_i.must_equal 2 + @reservation_1_id_check.id.to_i
+    end
   end
 end
