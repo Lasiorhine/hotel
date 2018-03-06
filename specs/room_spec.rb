@@ -5,6 +5,10 @@ describe "Room class" do
   before do
     @room_300 = Hotel::Room.new("300")
     )
+    @reservation_n_nominal_6n = Hotel::Reservation.new('10th Jun 3013', '16th Jun 3013')
+    @reservation_1_follows_n_directly = Hotel::Reservation.new('16th Oct 3013', '2nd Nov 3013')
+    @reservation_2_overlaps_n_beginning = Hotel::Reservation.new('8th Jun 3013', '11th Jun 3013')
+    @reservation_3_overlaps_n_end = Hotel::Reservation.new('15th Jun 3013', '5th Jul 3013')
   end
   describe "initialize(room_number)" do
     it "must have a room number encoded as a symbol" do
@@ -53,8 +57,14 @@ describe "Room class" do
     it "accepts a reservation when the start date is the same as the date of the request, assuming no other conflicts" do
     end
 
-    it "rejects a reservation when the start date is the same as the date of the request, if the only conflict is for that day" do 
+    it "accepts a reservation that begins the same day another reservation ends, assuming no other conflicts" do
     end
+
+    it "accepts a reservation when its start date, the date of the request, and the end date of another reservation are all the same, assuming o other conflicts" do
+    end
+
+    it "rejects a reservation that begins the same date as the date of the request, if another conflict exists" do
+    end 
 
   end
 
