@@ -3,12 +3,20 @@ require_relative 'spec_helper'
 
 describe "Room class" do
   before do
-    @room_300 = Hotel::Room.new("300")
-    )
-    @reservation_n_nominal_6n = Hotel::Reservation.new('10th Jun 3013', '16th Jun 3013')
-    @reservation_1_follows_n_directly = Hotel::Reservation.new('16th Oct 3013', '2nd Nov 3013')
-    @reservation_2_overlaps_n_beginning = Hotel::Reservation.new('8th Jun 3013', '11th Jun 3013')
-    @reservation_3_overlaps_n_end = Hotel::Reservation.new('15th Jun 3013', '5th Jul 3013')
+
+    right_now = Time.now.to_s
+    two_days_ago = Time.at(Time.now.to_i - 172800).to_s
+    two_days_from_now = Time.at(Time.now.to_i + 172800).to_s
+
+    @room_300_nominal = Hotel::Room.new("300")
+    @room_400_no_res = Hotel::Room.new("400")
+
+    @reservation_n1_nominal = Hotel::Reservation.new('10th Jun 3013', '16th Jun 3013')
+    @reservation_1_follows_n1_directly = Hotel::Reservation.new('16th Oct 3013', '2nd Nov 3013')
+    @reservation_2_overlaps_n1_beginning = Hotel::Reservation.new('8th Jun 3013', '11th Jun 3013')
+    @reservation_3_overlaps_n1_end = Hotel::Reservation.new('15th Jun 3013', '5th Jul 3013')
+    @reservation_n2_nominal = Hotel::Reservation.new('10th Jun 3014', '16th Jun 3014')
+    @reservation_n3_nominal = Hotel::Reservation.new('10th Oct 3015', '9th Dec 3015')
   end
   describe "initialize(room_number)" do
     it "must have a room number encoded as a symbol" do
@@ -25,12 +33,21 @@ describe "Room class" do
   describe "report_all_reservations" do
 
     it "returns a complete collection of reservations for the room" do
+      all_nominal_reservations = [@reservation_n1_nominal, @reservation_n2_nominal, @reservation_n3_nominal]
+      @room_300.reservations = all_nominal_reservations
+      @room_300.report_all_reservations.must_equal all_nominal_reservations
     end
 
     it "returns nil when a room has no present or pending reservations" do
+      @room_400_no_res.report_alL_reservations.must_be_nil
     end
 
-    it "performs properly when the room is reserved on the same day the method is called" do
+    it "performs properly when the room has a reservation that ends on the day on which the method is called" do
+
+    end
+
+    it "performs properly when the room has a reservation that ends on the day on which the method is called" do
+
     end
   end
 
@@ -64,7 +81,7 @@ describe "Room class" do
     end
 
     it "rejects a reservation that begins the same date as the date of the request, if another conflict exists" do
-    end 
+    end
 
   end
 
