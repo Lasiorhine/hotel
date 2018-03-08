@@ -1,4 +1,5 @@
 require 'date'
+require 'pry'
 require_relative 'spec_helper'
 
 describe "Room class" do
@@ -19,14 +20,14 @@ describe "Room class" do
     @reservation_n3_nominal = Hotel::Reservation.new('10th Oct 3015', '9th Dec 3015')
   end
   describe "initialize(room_number)" do
-    it "must have a room number encoded as a symbol" do
-      @room_300.room_number.must_be_kind_of Symbol
+    it "must have a room number encoded as a string" do
+      @room_300_nominal.room_number.must_be_kind_of String
     end
     it "must accurately report its own room number" do
-      @room_300.room_number.must_equal :300
+      @room_300_nominal.room_number.must_equal "300"
     end
     it "must store its reservations in an array" do
-      @room_300.reservations.must_be_kind_of Array
+      @room_300_nominal.reservations.must_be_kind_of Array
     end
   end
 
@@ -34,8 +35,8 @@ describe "Room class" do
 
     it "returns a complete collection of reservations for the room" do
       all_nominal_reservations = [@reservation_n1_nominal, @reservation_n2_nominal, @reservation_n3_nominal]
-      @room_300.reservations = all_nominal_reservations
-      @room_300.report_all_reservations.must_equal all_nominal_reservations
+      @room_300_nominal.reservations = all_nominal_reservations
+      @room_300_nominal.report_all_reservations.must_equal all_nominal_reservations
     end
 
     it "returns nil when a room has no present or pending reservations" do
@@ -43,6 +44,7 @@ describe "Room class" do
     end
 
     it "performs properly when the room has a reservation that ends on the day on which the method is called" do
+      @reservation_ending_today = Hotel::Reservation.new(two_days_ago, right_now)
 
     end
 
@@ -82,13 +84,13 @@ describe "Room class" do
 
     it "rejects a reservation that begins the same date as the date of the request, if another conflict exists" do
     end
-
   end
 
   describe "add_reservation(reservation)" do
     it "must add itself to the room's collection of reservations" do
     end
 
-    it "must add the dates of the reservation to the room's collection of unavailable dates"
+    it "must add the dates of the reservation to the room's collection of unavailable dates" do
     end
+  end
 end

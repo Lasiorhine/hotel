@@ -8,7 +8,7 @@ require 'pry'
 module Hotel
   class Reservation
     attr_accessor :start_date, :end_date
-    attr_reader :id, :total_nights, :total_reservation_cost
+    attr_reader :id, :days_booked_am_and_pm, :total_nights, :total_reservation_cost
 
     @@last_id_base = 0
 
@@ -22,11 +22,13 @@ module Hotel
       @id = assign_id
       @start_date = DateTime.parse(start_date)
       @end_date = DateTime.parse(end_date)
+      @days_booked_am_and_pm = days_with_am_and_pm_occupation
       @total_nights = calculate_total_nights
       @total_reservation_cost = calculate_reservation_price
 
-
-      if (@end_date.to_time.to_i - @start_date.to_time.to_i) < MIN_RES_IN_SEC || @start_date.to_time.to_i < Time.now.to_i
+      #THIS IS GOOD, BUT IT EFFS UP YOUR ABILITY TO TEST CERTAIN SHIT. MAYBE PUT THE VALIDATION MEASURE FOR START-DATES IN THE PAST IN FrontDesk??? OR RESCUE??
+      ## Commenting out the req about not starting reservations in the past--- for now.
+      if (@end_date.to_time.to_i - @start_date.to_time.to_i) < MIN_RES_IN_SEC #|| @start_date.to_time.to_i < Time.now.to_i
         raise StandardError.new("A reservation's end date must come after its start date, and it must be at least one night long.")
       end
     end
@@ -42,6 +44,33 @@ module Hotel
 
     def calculate_total_nights
       (@end_date.to_date - @start_date.to_date).to_i
+    end
+
+    def days_with_am_and_pm_occupation
+      first_key = @start_date.jd.to_s
+      last_key = @end_date.jd.to_s
+      start_and_end_days = {
+        first_key => {
+          :am => false,
+          :pm => true
+          },
+        last_key => {
+          :am => true,
+          :pm => false
+          }
+        }
+      intervening_span = (last_key.to_i - first_key.to_i - 1)
+      mid_keys_array = []
+      while intervening_span > 0
+        mid_key = (first_key.to_i + intervening_span).to_s
+        mid_keys_array << mid_key
+        intervening_span -= 1
+      end
+      full_days_in_use = {}
+      unless mid_keys_array.empty?
+        full_days_in_use = mid_keys_array.map {|day| [day, {:am => true, :pm => true}] }
+      end
+      all_days_in_use = start_and_end_days.merge(full_days_in_use.to_h)
     end
 
     def calculate_reservation_price
