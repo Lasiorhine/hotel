@@ -12,5 +12,7 @@ module Hotel
       @reservations = []
       @dates_unavailable = []
     end
+    def report_all_reservations
+    end
   end
 end

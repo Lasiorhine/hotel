@@ -5,9 +5,9 @@ require_relative 'spec_helper'
 describe "Room class" do
   before do
 
-    right_now = Time.now.to_s
-    two_days_ago = Time.at(Time.now.to_i - 172800).to_s
-    two_days_from_now = Time.at(Time.now.to_i + 172800).to_s
+    @right_now = Time.now.to_s
+    @two_days_ago = Time.at(Time.now.to_i - 172800).to_s
+    @two_days_from_now = Time.at(Time.now.to_i + 172800).to_s
 
     @room_300_nominal = Hotel::Room.new("300")
     @room_400_no_res = Hotel::Room.new("400")
@@ -31,27 +31,27 @@ describe "Room class" do
     end
   end
 
-  describe "report_all_reservations" do
-
-    it "returns a complete collection of reservations for the room" do
-      all_nominal_reservations = [@reservation_n1_nominal, @reservation_n2_nominal, @reservation_n3_nominal]
-      @room_300_nominal.reservations = all_nominal_reservations
-      @room_300_nominal.report_all_reservations.must_equal all_nominal_reservations
-    end
-
-    it "returns nil when a room has no present or pending reservations" do
-      @room_400_no_res.report_alL_reservations.must_be_nil
-    end
-
-    it "performs properly when the room has a reservation that ends on the day on which the method is called" do
-      @reservation_ending_today = Hotel::Reservation.new(two_days_ago, right_now)
-
-    end
-
-    it "performs properly when the room has a reservation that ends on the day on which the method is called" do
-
-    end
-  end
+  # describe "report_all_reservations" do
+  #
+  #   it "returns a complete collection of reservations for the room" do
+  #     all_nominal_reservations = [@reservation_n1_nominal, @reservation_n2_nominal, @reservation_n3_nominal]
+  #     @room_300_nominal.reservations = all_nominal_reservations
+  #     @room_300_nominal.report_all_reservations.must_equal all_nominal_reservations
+  #   end
+  #
+  #   it "returns nil when a room has no present or pending reservations" do
+  #     @room_400_no_res.report_all_reservations.must_be_nil
+  #   end
+  #
+  #   it "performs properly when the room has a reservation that ends on the day on which the method is called" do
+  #     @reservation_ending_today = Hotel::Reservation.new(@two_days_ago, @right_now)
+  #
+  #   end
+  #
+  #   it "performs properly when the room has a reservation that ends on the day on which the method is called" do
+  #
+  #   end
+  # end
 
   describe "report_availability(date)" do
 
