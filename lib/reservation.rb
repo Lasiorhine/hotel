@@ -47,6 +47,16 @@ module Hotel
     end
 
     def days_with_am_and_pm_occupation
+      # This creates a hash of hashes for the dates within a reservation.  For
+      # each date, the key of the base hash is the date in Julian.  The value of
+      # that hash is a second hash with two key-value pairs, the key of the
+      # first being :am, and the key of the second being :pm.  The values of these
+      # can be either true or false.
+
+      # For a date in the middle of the hash, the :am and :pm keys will both have
+      # the value true.  For the start date of a reservation, the :am key will
+      # have the value false, and the :pm key will have the value true.
+      # The end-date will have a value of true for its :am key and false for its :pm key.
       first_key = @start_date.jd.to_s
       last_key = @end_date.jd.to_s
       start_and_end_days = {

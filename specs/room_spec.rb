@@ -31,38 +31,37 @@ describe "Room class" do
     end
   end
 
-  # describe "report_all_reservations" do
-  #
-  #   it "returns a complete collection of reservations for the room" do
-  #     all_nominal_reservations = [@reservation_n1_nominal, @reservation_n2_nominal, @reservation_n3_nominal]
-  #     @room_300_nominal.reservations = all_nominal_reservations
-  #     @room_300_nominal.report_all_reservations.must_equal all_nominal_reservations
-  #   end
-  #
-  #   it "returns nil when a room has no present or pending reservations" do
-  #     @room_400_no_res.report_all_reservations.must_be_nil
-  #   end
-  #
-  #   it "performs properly when the room has a reservation that ends on the day on which the method is called" do
-  #     @reservation_ending_today = Hotel::Reservation.new(@two_days_ago, @right_now)
-  #
-  #   end
-  #
-  #   it "performs properly when the room has a reservation that ends on the day on which the method is called" do
-  #
-  #   end
-  # end
+  describe "report_reservations_for_day(date_julian)" do
+
+    #THIS IS WHERE AN IMPORTANT HANDSHAKE BETWEEN RESERVATION AND ROOM NEEDS TO HAPPEN.
+    it "returns a complete collection of reservations for the room" do
+      all_nominal_reservations = [@reservation_n1_nominal, @reservation_n2_nominal, @reservation_n3_nominal]
+      @room_300_nominal.reservations = all_nominal_reservations
+      @room_300_nominal.report_all_reservations.must_equal all_nominal_reservations
+    end
+
+    it "returns nil when a room has no present or pending reservations" do
+      @room_400_no_res.report_all_reservations.must_be_nil
+    end
+
+    it "performs properly when the room has a reservation that ends on the day on which the method is called" do
+      @reservation_ending_today = Hotel::Reservation.new(@two_days_ago, @right_now)
+
+    end
+
+    it "performs properly when the room has a reservation that ends on the day on which the method is called" do
+
+    end
+  end
 
   describe "report_availability(date)" do
 
-    it "accurately reports reservations when run for the current day" do
+    it "accurately reports reservations when run for a single day" do
     end
 
-    it "accurately reports reservations for a future date" do
+    it "accurately reports reservations for a range of days" do
     end
 
-    it "accurately reports reservations for a date in the past" do
-    end
   end
 
   describe "can_accept_reservation?(reservation)" do

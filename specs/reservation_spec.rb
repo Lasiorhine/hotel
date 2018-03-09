@@ -25,12 +25,7 @@ describe "Reservation class" do
       @reservation_0_nominal_6n.end_date.must_be_instance_of DateTime
     end
 
-    # Note:  COMMENTING THIS OUT FOR NOW.  WILL PROBABLY move this functionality to FrontDesk.
-    # it "Raises an error if the start date comes before the date of instantiation" do
-    #   too_early_start = '1st Feb 1975'
-    #   acceptible_end = '2nd Feb 3080'
-    #   proc{ Hotel::Reservation.new(too_early_start, acceptible_end) }.must_raise StandardError
-    # end
+
 
     it "raises an error if the end date is not at least one day after the end date" do
       late_start = '3rd May 3075'
