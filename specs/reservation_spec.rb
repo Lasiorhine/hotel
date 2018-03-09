@@ -70,7 +70,8 @@ describe "Reservation class" do
     it "must be composed of key-value pairs in which all the keys are Julian dates in string form" do
       @nominal_understand_days.each do |k, v|
         k.must_be_kind_of String
-        #must_match /^24[56]\d{4}$/
+        # Conversion note: This test uses a hard-coded seven-date range that starts with Junee 10, 3013
+        k.must_match /^2821\d{3}$/
       end
     end
 
@@ -86,10 +87,6 @@ describe "Reservation class" do
         v.has_key?(:am).must_equal true
         v.has_key?(:pm).must_equal true
       end
-      #
-      # _value.count.must_equal 2
-      # @nominal_understand_days.each_value.has_key?(:am).must_equal true
-      # @nominal_understand_days.each_value.has_key?(:pm).must_equal true
     end
 
     it "must contain a key-value pair for the start date in which the key is the start date, and the value is a 2-item hash, wherein the :am key's value is 'false' and the :pm key's value is 'true'" do
@@ -134,7 +131,7 @@ describe "Reservation class" do
     it "correctly calculates the length of a stay that begins in one year and ends in another" do
       @reservation_3_35n.calculate_total_nights.must_equal 35
     end
-    it "correctly calculates teh length of a stay that is one night long" do
+    it "correctly calculates the length of a stay that is one night long" do
       @reservation_1_1n.calculate_total_nights.must_equal 1
     end
   end
