@@ -253,5 +253,38 @@ describe "Room class" do
       @room_300_nominal.dates_unavailable.keys.must_include "2821697"
     end
 
+    it "raises a standard error if an attempt is made to add a reservation that conflicts with an existing reservation" do
+
+      #Note -- at this time, my plan is actually for this to happen in FrontDesk, but all the machinery is present to make this happen here as well, so maybe I'll just go ahead and do this?
+      @room_300_nominal.add_reservation(@reservation_n1_nominal)
+
+      proc{ @room_300_nominal.add_reservation(@reservation_2_overlaps_n1_beginning)}.must_raise StandardError
+
+
+    end
+
+    it "creates a date hash with values of true for both :am and :pm for any date on which a (non-conflicting) new reservation's start or end date falls on the start or end date of a pre-existing reservation and logs it in the room's @dates_unavailable hash. " do
+
+      @room_300_nominal.add_reservation(@reservation_n1_nominal)
+      room_before_booked = @room_300_nominal.dates_unavailable.dup
+      new_res_before_dates = @reservation_1_follows_n1_directly.days_booked_am_and_pm.dup
+
+      # The assertions below just test the test.
+      room_before_booked.count.must_equal 7
+      new_res_before_dates.count.must_equal 17
+      room_before_booked["2821702"][:pm].must_equal false
+      new_res_before_dates["2821702"][:am].must_equal false
+
+      @room_300_nominal.add_reservation(@reservation_1_follows_n1_directly)
+      dates_after_adding_and_conf_res = @room_300_nominal.dates_unavailable.dup
+
+      dates_after_adding_and_conf_res.count.must_equal 23
+      dates_after_adding_and_conf_res["2821702"][:am].must_equal true
+      dates_after_adding_and_conf_res["2821702"][:pm].must_equal true
+
+    end
+
+
+
   end
 end

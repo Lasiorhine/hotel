@@ -73,11 +73,21 @@ module Hotel
 
     def add_reservation(new_reservation)
       #PROCESS NOTES:  THink I'm going to write this method, then add in the rejection mechanics, even tough the rejection mechanics are already kind of there. The commented-out if/else business below will be retrofitted on.
-      # if can_accept_reservation(reservation) == true
-      # else #Make an error or something
-      # end
-      @reservations << new_reservation
-      @dates_unavailable.merge!(new_reservation.days_booked_am_and_pm)
+
+      adding_instructions = can_accept_reservation?(new_reservation)
+      if adding_instructions[:accept] == false
+        raise StandardError.new ("You are trying to add a reservation that conflicts with a pre-existing reservation")
+      else
+        @reservations << new_reservation
+        @dates_unavailable.merge!(new_reservation.days_booked_am_and_pm)
+      end
+      dates_with_conflicts_fixed = nil
+      if adding_instructions[:resolve_conflict].kind_of? Array
+        dates_with_conflicts_fixed = fix_conflicting_date(adding_instructions[:resolve_conflict])
+      #  binding.pry
+        dates_with_conflicts_fixed.each {|date| @dates_unavailable.merge!(date)}
+      #  binding.pry
+      end
     end
   end
 end
