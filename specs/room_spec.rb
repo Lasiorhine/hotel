@@ -158,7 +158,7 @@ describe "Room class" do
     end
   end
 
-  describe "resolve_date_conflict(conflict_array)" do
+  describe "fix_conflicting_date(conflict_array)" do
 
     before do
       @conflict_array_1 = [
@@ -176,9 +176,9 @@ describe "Room class" do
                             { :am => true, :pm => false }
                             }
                           ]
-      @conf_res_output_array_1 = @room_500_misc_tests.resolve_date_conflict(@conflict_array_1)
+      @conf_res_output_array_1 = @room_500_misc_tests.fix_conflicting_date(@conflict_array_1)
 
-      @conf_res_output_array_2 = @room_600_misc_tests.resolve_date_conflict(@conflict_array_2)
+      @conf_res_output_array_2 = @room_600_misc_tests.fix_conflicting_date(@conflict_array_2)
 
       @times_all_true_hash = {:am => true, :pm => true}
     end
@@ -193,23 +193,21 @@ describe "Room class" do
 
     it "outputs an array of date-hashes that have the same keys (Julian dates in string form) as its input-hashes" do
 
-      @conflict_array_1[0].keys.must_equal @conf_res_output_array_1[0].keys
+      @conf_res_output_array_1[0].keys.must_equal @conflict_array_1[0].keys
 
-      @conflict_array_2[0].keys.must_equal
-      @conf_res_output_array_2[0].keys
+      @conflict_array_2[0].keys.must_equal @conflict_array_2[0].keys
 
-      @conflict_array_2[1].keys.must_equal
-      @conf_res_output_array_2[1].keys
+      @conf_res_output_array_2[1].keys.must_equal  @conflict_array_2[1].keys
 
     end
 
     it "outputs an array that contains one or more date-hashes, where the key of each is a Julian date in string form, and the value is a hash of two hashes, with keys :am and :pm, and a value of true for each" do
 
-        @conflict_array_1[0].values.must_equal @times_all_true_hash
+        @conf_res_output_array_1[0].values[0].must_equal @times_all_true_hash
 
-        @conflict_array_2[0].values.must_equal @times_all_true_hash
+        @conf_res_output_array_2[0].values[0].must_equal @times_all_true_hash
 
-        @conflict_array_2[1].values.must_equal @times_all_true_hash
+        @conf_res_output_array_2[1].values[0].must_equal @times_all_true_hash
 
     end
   end

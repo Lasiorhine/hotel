@@ -30,9 +30,7 @@ module Hotel
       reservation_acceptable = {:accept => true, :resolve_conflict => false}
       resolve_date_conflict = []
       unless @dates_unavailable.empty?
-        puts "unless at 33"
         unless reservation_acceptable[:accept] == false
-          puts "unless at 35"
           @dates_unavailable.each do |booked_date|
             # Note:  I originally had the am/pm conflict checking written as a single, long, one-line thing, but that made minitest loose its mind, so now it's in all these little chunks.
             date = booked_date
@@ -67,6 +65,10 @@ module Hotel
         end
       end
       return reservation_acceptable
+    end
+    def fix_conflicting_date(conflict_array)
+      output_array = conflict_array.map {|d| {d.keys[0] => {:am => true, :pm => true}}}
+      return output_array
     end
 
     def add_reservation(new_reservation)
