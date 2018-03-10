@@ -57,20 +57,38 @@ describe "Room class" do
   end
 
   describe "report_reservations_for_day(date_julian)" do
+    before do
 
-    it "accurately reports reservations when run for a single day" do
       @room_300_nominal.add_reservation(@reservation_n1_nominal)
       @room_300_nominal.add_reservation(@reservation_1_follows_n1_directly)
 
-      jun_10_reservations = @room_300_nominal.report_reservations_for_day("2821702")
-      jun_10_reservations.length.must_equal 2
-      jun_10_reservations.must_be_kind_of Array
-      jun_10_reservations.must_include @reservation_n1_nominal
-      jun_10_reservations.must_include @reservation_1_follows_n1_directly
+    end
+
+    it "accurately reports reservations for a day on which there is a single reservation" do
+
+      jun_12_reservations = @room_300_nominal.report_reservations_for_day("2821698")
+      jun_12_reservations.must_be_kind_of Array
+      jun_12_reservations.length.must_equal 1
+      jun_12_reservations.must_include @reservation_n1_nominal
+    end
+
+    it "accurately reports reservations when run for a day on which one reservation begins and another ends" do
+
+      jun_16_reservations = @room_300_nominal.report_reservations_for_day("2821702")
+      jun_16_reservations.length.must_equal 2
+      jun_16_reservations.must_be_kind_of Array
+      jun_16_reservations.must_include @reservation_n1_nominal
+      jun_16_reservations.must_include @reservation_1_follows_n1_directly
 
     end
 
+    it "returns nil if a room has no reservations for a given day." do
 
+      xmas_3075_reservations = @room_300_nominal.report_reservations_for_day("2844539")
+
+      xmas_3075_reservations.must_be_nil
+
+    end
 
   end
 

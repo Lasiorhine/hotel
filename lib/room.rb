@@ -23,7 +23,12 @@ module Hotel
     end
 
     def report_reservations_for_day(date_julian)
+      report = nil
       resvs_for_day = @reservations.find_all {|reservation| reservation.days_booked_am_and_pm[date_julian]}
+      if resvs_for_day.any?
+        report = resvs_for_day
+      end
+      return report
     end
             #
             #
