@@ -10,7 +10,7 @@ module Hotel
     def initialize(room_number)
       @room_number = room_number
       @reservations = []
-      @dates_unavailable = []
+      @dates_unavailable = {}
     end
 
     def report_all_reservations
@@ -22,12 +22,15 @@ module Hotel
     end
 
     def report_reservations_for_day(date_julian)
+      # THIS NEEDS TO BE TESTED AFTER THE RESERVATION-ADDING MECHANICS GO IN, BECAUSE IT WILL READ FROM 'Dates Unavailable.'
     end
 
     def can_accept_reservation?(reservation)
-      reservation_acceptable = true
+      reservation_acceptable = {:accept => true, :resolve_conflict => false}
+      resolve_date_conflict = []
       unless @dates_unavailable.empty?
         dates_unavailable.each do |date|
+          # Note:  I originally had the am/pm conflict checking written as a single, long, one-line thing, but that made minitest loose its mind, so now it's in all these little chunks.
           if reservation.days_booked_am_and_pm.keys.include?(date)
             am_conflict = nil
             pm_conflict = nil
@@ -42,18 +45,26 @@ module Hotel
               pm_conflict = true
             end
             unless am_conflict == false && pm_conflict == false
-              reservation_acceptable = false
+              reservation_acceptable = {:accept => false, :resolve_conflict => nil}
+            else
+              resolve_date_conflict << date
             end
           end
         end
+        reservation_accetable = {:accept => true, :resolve_conflict => resolve_date_conflict}
       end
       return reservation_acceptable
     end
 
-    # def add_reservation(reservation_acceptable?, reservation)
-    #   if can_accept_reservation(reservation) == true
-    #   else #Make an error or something
-    #   end
-    # end
+    def add_reservation(new_reservation)
+      #PROCESS NOTES:  THink I'm going to write this method, then add in the rejection mechanics, even tough the rejection mechanics are already kind of there. The commented-out if/else business below will be retrofitted on.
+      # if can_accept_reservation(reservation) == true
+      # else #Make an error or something
+      # end
+      @reservations << new_reservation
+      @dates_unavailable.merge!(new_reservation.days_booked_am_and_pm)
+
+
+    end
   end
 end

@@ -7,8 +7,8 @@ require 'pry'
 
 module Hotel
   class Reservation
-    attr_accessor :start_date, :end_date
-    attr_reader :id, :days_booked_am_and_pm, :total_nights, :total_reservation_cost
+    attr_accessor :start_date, :end_date, :days_booked_am_and_pm
+    attr_reader :id, :total_nights, :total_reservation_cost
 
     @@last_id_base = 0
 

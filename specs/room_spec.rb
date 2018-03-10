@@ -31,7 +31,7 @@ describe "Room class" do
     end
   end
 
-  describe "report_reservations_for_day(date_julian)" do
+  describe "report_all_reservations" do
 
     #THIS IS WHERE AN IMPORTANT HANDSHAKE BETWEEN RESERVATION AND ROOM NEEDS TO HAPPEN.
     it "returns a complete collection of reservations for the room" do
@@ -54,7 +54,7 @@ describe "Room class" do
     end
   end
 
-  describe "report_availability(date)" do
+  describe "report_availability_for_day(date_julian)" do
 
     it "accurately reports reservations when run for a single day" do
     end
@@ -85,11 +85,48 @@ describe "Room class" do
     end
   end
 
-  describe "add_reservation(reservation)" do
+  describe "add_reservation(new_reservation)" do
+
+
     it "must add itself to the room's collection of reservations" do
+
+      @room_300_nominal.reservations << @reservation_n1_nominal
+      before_reservations = @room_300_nominal.reservations.dup
+      before_count = before_reservations.count
+      @room_300_nominal.add_reservation(@reservation_n2_nominal)
+
+      # The two assertions below just test the test
+      before_reservations.must_include @reservation_n1_nominal
+      before_count.must_equal 1
+
+      @room_300_nominal.reservations.count.must_equal 2
+      @room_300_nominal.reservations.must_include @reservation_n1_nominal
+      @room_300_nominal.reservations.must_include @reservation_n2_nominal
+    end
+
+    it "performs properly if a room has no other pending reservations" do
+
+      before_reservations = @room_400_no_res.reservations.dup
+      @room_400_no_res.add_reservation(@reservation_n3_nominal)
+
+      #The assertion below just tests the test
+      before_reservations.must_be_empty
+
+      @room_400_no_res.reservations.count.must_equal 1
+      @room_400_no_res.reservations.must_include @reservation_n3_nominal
+
     end
 
     it "must add the dates of the reservation to the room's collection of unavailable dates" do
+
+      before_unavailables =  @room_300_nominal.dates_unavailable.dup
+      before_unavailables.count.must_equal 0
+
+      @room_300_nominal.add_reservation(@reservation_n1_nominal)
+      @room_300_nominal.dates_unavailable.count.must_equal 7
+      @room_300_nominal.dates_unavailable.keys.must_include "2821697"
+
     end
+
   end
 end
