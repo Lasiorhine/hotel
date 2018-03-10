@@ -56,13 +56,21 @@ describe "Room class" do
 
   end
 
-  describe "report_availability_for_day(date_julian)" do
+  describe "report_reservations_for_day(date_julian)" do
 
     it "accurately reports reservations when run for a single day" do
+      @room_300_nominal.add_reservation(@reservation_n1_nominal)
+      @room_300_nominal.add_reservation(@reservation_1_follows_n1_directly)
+
+      jun_10_reservations = @room_300_nominal.report_reservations_for_day("2821702")
+      june_10_reservations.length.must_equal 2
+      june_10_reservations.must_be_kind_of Array
+      june_10_reservations.must_inlude @reservation_n1_nominal
+      june_10_reservations.must_include @reservation_1_follows_n1_directly
+
     end
 
-    it "accurately reports reservations for a range of days" do
-    end
+
 
   end
 
@@ -243,7 +251,7 @@ describe "Room class" do
 
     end
 
-    it "must add the dates of the reservation to the room's collection of unavailable dates" do
+    it "adds the dates of the reservation to the room's collection of unavailable dates" do
 
       before_unavailables =  @room_300_nominal.dates_unavailable.dup
       before_unavailables.count.must_equal 0

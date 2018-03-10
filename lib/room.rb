@@ -72,7 +72,6 @@ module Hotel
     end
 
     def add_reservation(new_reservation)
-      #PROCESS NOTES:  THink I'm going to write this method, then add in the rejection mechanics, even tough the rejection mechanics are already kind of there. The commented-out if/else business below will be retrofitted on.
 
       adding_instructions = can_accept_reservation?(new_reservation)
       if adding_instructions[:accept] == false
