@@ -39,44 +39,33 @@ module Hotel
             if reservation.days_booked_am_and_pm.keys.include?(date[0])
               am_conflict = nil
               pm_conflict = nil
-              puts "if at 42"
               if (date[1][:am] == false) ^ (reservation.days_booked_am_and_pm[date[0]][:am] == false)
                 am_conflict = false
-                puts "if at 45"
               else
                 am_conflict = true
-                puts "else at 46"
               end
               if  (date[1][:pm] == false)  ^  (reservation.days_booked_am_and_pm[date[0]][:pm] == false)
                 pm_conflict = false
-                puts "if at 52"
               else
                 pm_conflict = true
-                puts "else at 53"
               end
               unless am_conflict == false && pm_conflict == false
                 reservation_acceptable = {:accept => false, :resolve_conflict => false}
-                puts "unless at 59"
               else
                 conflicted_date_hash = {booked_date[0] => booked_date[1]}
                 resolve_date_conflict << conflicted_date_hash
-                puts "else at 62"
               end
             end
           end
         end
       end
       unless reservation_acceptable[:accept] == false
-        puts "unless at 69"
         if resolve_date_conflict.any?
           reservation_acceptable[:resolve_conflict] = resolve_date_conflict
-          puts "if at 72"
         else
           reservation_acceptable[:resolve_conflict] = false
-          puts "else at 75"
         end
       end
-      puts "end at 78"
       return reservation_acceptable
     end
 

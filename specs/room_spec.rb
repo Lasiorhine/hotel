@@ -12,6 +12,7 @@ describe "Room class" do
     @room_300_nominal = Hotel::Room.new("300")
     @room_400_no_res = Hotel::Room.new("400")
     @room_500_misc_tests = Hotel::Room.new("500")
+    @room_600_misc_tests = Hotel::Room.new("600")
 
     @reservation_n1_nominal = Hotel::Reservation.new('10th Jun 3013', '16th Jun 3013')
     @reservation_n2_nominal = Hotel::Reservation.new('10th Jun 3014', '16th Jun 3014')
@@ -157,6 +158,61 @@ describe "Room class" do
     end
   end
 
+  describe "resolve_date_conflict(conflict_array)" do
+
+    before do
+      @conflict_array_1 = [
+                            { "28281899" =>
+                              { :am => false, :pm => true }
+                            }
+                          ]
+
+      @conflict_array_2 = [
+                          {"28281802" =>
+                            { :am => false, :pm => true }
+                          },
+
+                          {"28281807" =>
+                            { :am => true, :pm => false }
+                            }
+                          ]
+      @conf_res_output_array_1 = @room_500_misc_tests.resolve_date_conflict(@conflict_array_1)
+
+      @conf_res_output_array_2 = @room_600_misc_tests.resolve_date_conflict(@conflict_array_2)
+
+      @times_all_true_hash = {:am => true, :pm => true}
+    end
+
+    it "outputs an array that is the same length as its input array" do
+      before_length_1 = @conflict_array_1.length
+      before_length_2 = @conflict_array_2.length
+
+      @conf_res_output_array_1.length.must_equal before_length_1
+      @conf_res_output_array_2.length.must_equal before_length_2
+    end
+
+    it "outputs an array of date-hashes that have the same keys (Julian dates in string form) as its input-hashes" do
+
+      @conflict_array_1[0].keys.must_equal @conf_res_output_array_1[0].keys
+
+      @conflict_array_2[0].keys.must_equal
+      @conf_res_output_array_2[0].keys
+
+      @conflict_array_2[1].keys.must_equal
+      @conf_res_output_array_2[1].keys
+
+    end
+
+    it "outputs an array that contains one or more date-hashes, where the key of each is a Julian date in string form, and the value is a hash of two hashes, with keys :am and :pm, and a value of true for each" do
+
+        @conflict_array_1[0].values.must_equal @times_all_true_hash
+
+        @conflict_array_2[0].values.must_equal @times_all_true_hash
+
+        @conflict_array_2[1].values.must_equal @times_all_true_hash
+
+    end
+  end
   describe "add_reservation(new_reservation)" do
 
 
