@@ -1,4 +1,5 @@
 require 'date'
+require 'pry'
 
 require_relative 'reservation'
 require_relative 'front_desk'
@@ -29,38 +30,52 @@ module Hotel
       reservation_acceptable = {:accept => true, :resolve_conflict => false}
       resolve_date_conflict = []
       unless @dates_unavailable.empty?
+        puts "unless at 33"
         unless reservation_acceptable[:accept] == false
-          dates_unavailable.each do |date|
+          puts "unless at 35"
+          @dates_unavailable.each do |booked_date|
             # Note:  I originally had the am/pm conflict checking written as a single, long, one-line thing, but that made minitest loose its mind, so now it's in all these little chunks.
-            if reservation.days_booked_am_and_pm.keys.include?(date)
+            date = booked_date
+            if reservation.days_booked_am_and_pm.keys.include?(date[0])
               am_conflict = nil
               pm_conflict = nil
-              if (date[1][:am] == false) ^ (reservation.days_booked_am_and_pm[date][1][:am] == false)
+              puts "if at 42"
+              if (date[1][:am] == false) ^ (reservation.days_booked_am_and_pm[date[0]][:am] == false)
                 am_conflict = false
+                puts "if at 45"
               else
                 am_conflict = true
+                puts "else at 46"
               end
-              if ( date[1][:pm] == false ) ^ ( reservation.days_booked_am_and_pm[1][:pm] == false )
+              if  (date[1][:pm] == false)  ^  (reservation.days_booked_am_and_pm[date[0]][:pm] == false)
                 pm_conflict = false
+                puts "if at 52"
               else
                 pm_conflict = true
+                puts "else at 53"
               end
               unless am_conflict == false && pm_conflict == false
                 reservation_acceptable = {:accept => false, :resolve_conflict => false}
+                puts "unless at 59"
               else
                 resolve_date_conflict << date
+                puts "else at 62"
               end
             end
           end
         end
       end
       unless reservation_acceptable[:accept] == false
+        puts "unless at 69"
         if resolve_date_conflict.any?
           reservation_acceptable[:resolve_conflict] = resolve_date_conflict
+          puts "if at 72"
         else
           reservation_acceptable[:resolve_conflict] = false
+          puts "else at 75"
         end
       end
+      puts "end at 78"
       return reservation_acceptable
     end
 
