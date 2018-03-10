@@ -23,8 +23,13 @@ module Hotel
     end
 
     def report_reservations_for_day(date_julian)
-      # THIS NEEDS TO BE TESTED AFTER THE RESERVATION-ADDING MECHANICS GO IN, BECAUSE IT WILL READ FROM 'Dates Unavailable.'
+      resvs_for_day = @reservations.find_all {|reservation| reservation.days_booked_am_and_pm[date_julian]}
     end
+            #
+            #
+            #       def self.find(query_id)
+            #   found_order = Grocery::Order.all.find {|order_instance| order_instance.id == query_id}
+            #   return found_order
 
     def can_accept_reservation?(reservation)
       reservation_acceptable = {:accept => true, :resolve_conflict => false}

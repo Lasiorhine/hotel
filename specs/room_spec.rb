@@ -63,10 +63,10 @@ describe "Room class" do
       @room_300_nominal.add_reservation(@reservation_1_follows_n1_directly)
 
       jun_10_reservations = @room_300_nominal.report_reservations_for_day("2821702")
-      june_10_reservations.length.must_equal 2
-      june_10_reservations.must_be_kind_of Array
-      june_10_reservations.must_inlude @reservation_n1_nominal
-      june_10_reservations.must_include @reservation_1_follows_n1_directly
+      jun_10_reservations.length.must_equal 2
+      jun_10_reservations.must_be_kind_of Array
+      jun_10_reservations.must_include @reservation_n1_nominal
+      jun_10_reservations.must_include @reservation_1_follows_n1_directly
 
     end
 
