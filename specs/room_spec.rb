@@ -18,7 +18,7 @@ describe "Room class" do
     @reservation_n3_nominal = Hotel::Reservation.new('10th Oct 3015', '9th Dec 3015')
 
     @reservation_0_precedes_n1_directly = Hotel::Reservation.new('5th Jun 3013', '10th Jun 3013')
-    @reservation_1_follows_n1_directly = Hotel::Reservation.new('16th Oct 3013', '2nd Nov 3013')
+    @reservation_1_follows_n1_directly = Hotel::Reservation.new('16th Jun 3013', '2nd Jul 3013')
     @reservation_2_overlaps_n1_beginning = Hotel::Reservation.new('8th Jun 3013', '11th Jun 3013')
     @reservation_3_overlaps_n1_end = Hotel::Reservation.new('15th Jun 3013', '5th Jul 3013')
     @reservation_4_overlaps_n1_precedes_n2 = Hotel::Reservation.new('14th Jun 3013', '10th Jun 3014')
@@ -71,7 +71,7 @@ describe "Room class" do
       @room_300_nominal.add_reservation(@reservation_n1_nominal)
     end
 
-    it "returns the value '{:accept => true, :resolve_conflict => false}' if the proposed reservation does not conflict with or share a starting/ending date with an existing reservation" do
+    xit "returns the value '{:accept => true, :resolve_conflict => false}' if the proposed reservation does not conflict with or share a starting/ending date with an existing reservation" do
 
       acceptability_result = @room_300_nominal.can_accept_reservation?(@reservation_n2_nominal)
 
@@ -80,7 +80,7 @@ describe "Room class" do
 
     end
 
-    it "gives a value {:accept => false, :resolve_conflict => false} for a new reservation that has a whole-day conflict with an existing reservation " do
+    xit "gives a value {:accept => false, :resolve_conflict => false} for a new reservation that has a whole-day conflict with an existing reservation " do
 
       early_conflict_result = @room_300_nominal.can_accept_reservation?(@reservation_2_overlaps_n1_beginning)
       late_conflict_result = @room_300_nominal.can_accept_reservation?(@reservation_3_overlaps_n1_end)
@@ -93,7 +93,7 @@ describe "Room class" do
       late_conflict_result[:resolve_conflict].must_equal false
     end
 
-    it "gives a value {:accept => false, :resolve_conflict => false} for a one-night reservation that conflicts with an existing one-night reservation" do
+    xit "gives a value {:accept => false, :resolve_conflict => false} for a one-night reservation that conflicts with an existing one-night reservation" do
 
       @room_500_misc_tests.add_reservation(@reservation_a_single_night)
       single_day_conf_result = @room_500_misc_tests.can_accept_reservation?(@reservation_b_single_night)
@@ -103,7 +103,7 @@ describe "Room class" do
 
     end
 
-    it "gives a value {:accept => false, :resolve_conflict => false} when there is an acceptable start-and-end conflict with one existing reservation, and a full-day conflict with another reservation" do
+    xit "gives a value {:accept => false, :resolve_conflict => false} when there is an acceptable start-and-end conflict with one existing reservation, and a full-day conflict with another reservation" do
 
       @room_300_nominal.add_reservation(@reservation_n2_nominal)
 
@@ -123,38 +123,38 @@ describe "Room class" do
       follows_result[:resolve_conflict].count.must_equal 1
       follows_result[:resolve_conflict][0].must_be_kind_of Hash
       # Note:  This number is the date of the start-end overlap, respresented as a Julian date in string form.
-      follows_result[:resolve_conflict][0][0].must_equal "2821701"
+      follows_result[:resolve_conflict][0].keys.must_include "2821702"
 
     end
-    #
-    # it "gives a value of {:accept => true, :resolve_conflict => [foo1],  where foo1 is a hash of the date of the start-date/end-date overlap, when a proposed reservation ends on the day an existing reservation starts" do
-    #
-    #   precedes_result = @room_300_nominal.can_accept_reservation?(@reservation_0_precedes_n1_directly)
-    #
-    #   precedes_result[:accept].must_equal true
-    #   precedes_result[:resolve_conflict].must_be_kind_of Array
-    #   precedes_result[:resolve_conflict].count.must_equal 1
-    #   precedes_result[:resolve_conflict][0].must_be_kind_of Hash
-    #   # Note:  This number is the date of the start-end overlap, respresented as a Julian date in string form.
-    #   follows_result[:resolve_conflict][0][0].must_equal "2821695"
-    #
-    # end
-    #
-    # it "gives a value of {:accept => false, :resolve_conflict => [foo1, foo2], where foo1 and foo2 are hashes of the dates of the start-date/end-date overlaps, when a proposed reservation starts on the day an existing reservation ends, and ends on the day an existing reservation starts" do
-    #
-    #   @room_300_nominal.add_reservation(@reservation_n2_nominal)
-    #   in_middle_result = @room_300_nominal.can_accept_reservation?(@reservation_5_follows_n1_precedes_n2)
-    #
-    #   in_middle_result[:accept].must_equal true
-    #   in_middle_result[:resolve_conflict].must_be_kind_of Array
-    #   in_middle_result[:resolve_conflict].count.must_equal 2
-    #   in_middle_result[:resolve_conflict][0].must_be_kind_of Hash
-    #   # Note:  This number is the date of the first start-end overlap, respresented as a Julian date in string form.
-    #   in_middle_result[:resolve_conflict][0][0].must_equal "2821701"
-    #   in_middle_result[:resolve_conflict][1].must_be_kind_of Hash
-    #   # Note:  This number is the date of the second start-end overlap, respresented as a Julian date in string form.
-    #   in_middle_result[:resolve_conflict][1][0].must_equal "2822060"
-    # end
+
+    xit "gives a value of {:accept => true, :resolve_conflict => [foo1],  where foo1 is a hash of the date of the start-date/end-date overlap, when a proposed reservation ends on the day an existing reservation starts" do
+
+      precedes_result = @room_300_nominal.can_accept_reservation?(@reservation_0_precedes_n1_directly)
+
+      precedes_result[:accept].must_equal true
+      precedes_result[:resolve_conflict].must_be_kind_of Array
+      precedes_result[:resolve_conflict].count.must_equal 1
+      precedes_result[:resolve_conflict][0].must_be_kind_of Hash
+      # Note:  This number is the date of the start-end overlap, respresented as a Julian date in string form.
+      follows_result[:resolve_conflict][0][0].must_equal "2821695"
+
+    end
+
+    xit "gives a value of {:accept => false, :resolve_conflict => [foo1, foo2], where foo1 and foo2 are hashes of the dates of the start-date/end-date overlaps, when a proposed reservation starts on the day an existing reservation ends, and ends on the day an existing reservation starts" do
+
+      @room_300_nominal.add_reservation(@reservation_n2_nominal)
+      in_middle_result = @room_300_nominal.can_accept_reservation?(@reservation_5_follows_n1_precedes_n2)
+
+      in_middle_result[:accept].must_equal true
+      in_middle_result[:resolve_conflict].must_be_kind_of Array
+      in_middle_result[:resolve_conflict].count.must_equal 2
+      in_middle_result[:resolve_conflict][0].must_be_kind_of Hash
+      # Note:  This number is the date of the first start-end overlap, respresented as a Julian date in string form.
+      in_middle_result[:resolve_conflict][0][0].must_equal "2821701"
+      in_middle_result[:resolve_conflict][1].must_be_kind_of Hash
+      # Note:  This number is the date of the second start-end overlap, respresented as a Julian date in string form.
+      in_middle_result[:resolve_conflict][1][0].must_equal "2822060"
+    end
   end
 
   describe "add_reservation(new_reservation)" do

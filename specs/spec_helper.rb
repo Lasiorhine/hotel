@@ -3,6 +3,7 @@ SimpleCov.start
 
 require 'date'
 require 'minitest'
+require 'minitest/skip_dsl'
 require 'minitest/autorun'
 require 'minitest/reporters'
 

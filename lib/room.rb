@@ -58,7 +58,8 @@ module Hotel
                 reservation_acceptable = {:accept => false, :resolve_conflict => false}
                 puts "unless at 59"
               else
-                resolve_date_conflict << date
+                conflicted_date_hash = {booked_date[0] => booked_date[1]}
+                resolve_date_conflict << conflicted_date_hash
                 puts "else at 62"
               end
             end
