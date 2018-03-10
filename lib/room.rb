@@ -29,29 +29,37 @@ module Hotel
       reservation_acceptable = {:accept => true, :resolve_conflict => false}
       resolve_date_conflict = []
       unless @dates_unavailable.empty?
-        dates_unavailable.each do |date|
-          # Note:  I originally had the am/pm conflict checking written as a single, long, one-line thing, but that made minitest loose its mind, so now it's in all these little chunks.
-          if reservation.days_booked_am_and_pm.keys.include?(date)
-            am_conflict = nil
-            pm_conflict = nil
-            if (date[1][:am] == false) ^ (reservation.days_booked_am_and_pm[date][1][:am] == false)
-              am_conflict = false
-            else
-              am_conflict = true
-            end
-            if ( date[1][:pm] == false ) ^ ( reservation.days_booked_am_and_pm[1][:pm] == false )
-              pm_conflict = false
-            else
-              pm_conflict = true
-            end
-            unless am_conflict == false && pm_conflict == false
-              reservation_acceptable = {:accept => false, :resolve_conflict => nil}
-            else
-              resolve_date_conflict << date
+        unless reservation_acceptable[:accept] == false
+          dates_unavailable.each do |date|
+            # Note:  I originally had the am/pm conflict checking written as a single, long, one-line thing, but that made minitest loose its mind, so now it's in all these little chunks.
+            if reservation.days_booked_am_and_pm.keys.include?(date)
+              am_conflict = nil
+              pm_conflict = nil
+              if (date[1][:am] == false) ^ (reservation.days_booked_am_and_pm[date][1][:am] == false)
+                am_conflict = false
+              else
+                am_conflict = true
+              end
+              if ( date[1][:pm] == false ) ^ ( reservation.days_booked_am_and_pm[1][:pm] == false )
+                pm_conflict = false
+              else
+                pm_conflict = true
+              end
+              unless am_conflict == false && pm_conflict == false
+                reservation_acceptable = {:accept => false, :resolve_conflict => false}
+              else
+                resolve_date_conflict << date
+              end
             end
           end
         end
-        reservation_accetable = {:accept => true, :resolve_conflict => resolve_date_conflict}
+      end
+      unless reservation_acceptable[:accept] == false
+        if resolve_date_conflict.any?
+          reservation_acceptable[:resolve_conflict] = resolve_date_conflict
+        else
+          reservation_acceptable[:resolve_conflict] = false
+        end
       end
       return reservation_acceptable
     end
@@ -63,8 +71,6 @@ module Hotel
       # end
       @reservations << new_reservation
       @dates_unavailable.merge!(new_reservation.days_booked_am_and_pm)
-
-
     end
   end
 end
