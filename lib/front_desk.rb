@@ -108,6 +108,7 @@ module Hotel
 
 
     def report_reservation_price(id)
+
     end
 
 

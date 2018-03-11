@@ -16,6 +16,7 @@ describe "FrontDesk class" do
     @room_5000 = Hotel::Room.new("5000")
     @room_6000 = Hotel::Room.new("6000")
     @room_7000 = Hotel::Room.new("7000")
+    @room_8000 = Hotel::Room.new("8000")
 
     @reservation_n1_a = Hotel::Reservation.new('10th Jun 3013', '16th Jun 3013')
     @reservation_n2_a = Hotel::Reservation.new('10th Jun 3014', '16th Jun 3014')
@@ -310,9 +311,26 @@ describe "FrontDesk class" do
     end
   end
 
-  # I think this is fully covered in the reservation class? But maybe there's a better way?
+  describe "report_reservation_price(id)" do
 
-  xdescribe "report_reservation_price(id)" do
+    before do
+      @room_6000.add_reservation(@reservation_n1_c)
+      @room_6000.add_reservation(@res_6_singleton)
+
+      @front_desk_3.rooms = [@room_1000_as, @room_6000, @room_2000_bs]
+
+      @qres_price_query_id = @res_6_singleton.id
+
+      @reported_price = @front_desk_3.report_reservation_price(@res_price_query_id)
+    end
+
+    it "identifies returns a float" do
+      @reported_price.must_be_kind_of Float
+    end
+
+    it "correctly reports the price of a reservation" do
+      @reported_price.must_be_within_delta 2200.00, 0.003
+    end
   end
 end
 
