@@ -7,6 +7,7 @@ describe "FrontDesk class" do
   end
 
   describe "generate_rooms" do
+
   end
 
   describe "report_all_rooms" do
