@@ -109,7 +109,7 @@ describe "FrontDesk class" do
     end
   end
 
-  describe "report_all_reservations_day(date)" do
+  describe "find_all_reservations_for_date(date)" do
 
     before do
       @room_1000_as.add_reservation(@res_1_fllws_n1_direct)
@@ -150,10 +150,54 @@ describe "FrontDesk class" do
       reservation_report_1_jan.must_be_empty
 
     end
-
   end
 
+  describe "report_all_available_rooms(start_dt, end_dt)" do
 
+    before do
+
+      @room_4000.add_reservation(@reservation_n1_d)
+      @room_4000.add_reservation(@reservation_n2_d)
+      @room_4000.add_reservation(@res_5_fllws_n1_precedes_n2)
+
+      @room_5000.add_reservation(@reservation_n1_c)
+      @room_5000.add_reservation(@res_1_fllws_n1_direct)
+
+
+      @front_desk_3.rooms = [@room_1000_as, @room_2000_bs, @room_4000, @room_5000]
+
+    end
+
+    it "returns an array" do
+
+      @front_desk_3.report_all_available_rooms("12 Jan 2099", "12 May 2099").must_be_kind_of Array
+
+    end
+
+    it "returns a collection of room numbers for the rooms available between specified dates" do
+
+      aug_3013_rept =  @front_desk_3.report_all_available_rooms("1 Aug 3013", "17 Aug 3013")
+
+      aug_3013_rept.count.must_equal 3
+
+      aug_3013_rept.must_include "1000"
+      aug_3013_rept.must_include "2000"
+      aug_3013_rept.must_include "5000"
+
+      aug_3013_rept.wont_include "4000"
+
+    end
+
+    it "returns an empty array if no rooms are available between specified dates" do
+
+      @front_desk_3.report_all_available_rooms("12th Jun 3013", "14th Jun 3013").must_be_empty
+
+    end
+
+
+
+
+  end
 
   describe "find_available_room(start_d, end_d)" do
 
@@ -203,19 +247,8 @@ describe "FrontDesk class" do
   # describe "report_reservation_price(id)" do
   # end
 
-  xdescribe "report_all_reservations_day(date)" do
 
-    it "reports a list of reservations for a specified date" do
-    end
 
-  end
-
-  xdescribe "report_all_available_rooms(start_dt_julian, end_dt_julian)" do
-
-    it "reports a list of rooms that are available for a given date range" do
-    end
-
-  end
 
   #NOT EVEN GOING TO THINK ABOUT THIS PART RIGHT NOW.
   # describe "check_availability_for_block" do

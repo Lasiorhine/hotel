@@ -48,7 +48,21 @@ module Hotel
       return overall_report
     end
 
-    def report_all_availabile_rooms(start_dt, end_dt)
+    def report_all_available_rooms(start_dt, end_dt)
+      imaginary_reservation = Hotel::Reservation.new(start_dt, end_dt)
+      all_available_rooms = []
+      @rooms.each do |room|
+        available_room = nil
+        availability = room.can_accept_reservation?(imaginary_reservation)
+        if availability[:accept] == true
+          available_room = room
+        end
+        unless available_room == nil
+          available_room = available_room.room_number
+          all_available_rooms << available_room
+        end
+      end
+      return all_available_rooms
     end
 
     def find_available_room(start_d, end_d)
@@ -74,11 +88,7 @@ module Hotel
     def report_reservation_price(id)
     end
 
-    def report_all_reservations_day(date)
-    end
 
-    def report_all_availabile_rooms(start_dt, end_dt)
-    end
 
     # def check_availability_for_block(st_dt, end_dt)
     # end
