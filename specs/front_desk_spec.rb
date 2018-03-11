@@ -238,7 +238,7 @@ describe "FrontDesk class" do
 
   end
 
-  xdescribe "create_reservation_basic(start_date, end_date)" do
+  describe "create_reservation_basic(start_date, end_date)" do
 
     before do
       @new_jan_3014_res = @front_desk_2.create_reservation_basic('2nd Jan 3014', '19th Jan 3014')

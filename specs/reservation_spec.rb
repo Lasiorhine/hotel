@@ -138,9 +138,9 @@ describe "Reservation class" do
     end
 
     it "accurately returns the product of the room's per-day price and the length (in days) of the reservation" do
-      @reservation_0_nominal_6n.calculate_reservation_price.must_be_within_delta 600.00, 0.003
-      @reservation_1_1n.calculate_reservation_price.must_be_within_delta 100.00, 0.003
-      @reservation_3_35n.calculate_reservation_price.must_be_within_delta 3500.00, 0.003
+      @reservation_0_nominal_6n.calculate_reservation_price.must_be_within_delta 1200.00, 0.003
+      @reservation_1_1n.calculate_reservation_price.must_be_within_delta 200.00, 0.003
+      @reservation_3_35n.calculate_reservation_price.must_be_within_delta 7000.00, 0.003
     end
   end
 end

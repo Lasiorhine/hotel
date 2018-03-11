@@ -7,16 +7,13 @@ require 'pry'
 
 module Hotel
   class Reservation
-    attr_accessor :start_date, :end_date, :hotel_room_id, :days_booked_am_and_pm
+    attr_accessor :start_date, :end_date, :hotel_room_id, :days_booked_am_and_pm, :per_night_price
     attr_reader :id, :total_nights, :total_reservation_cost
 
     @@last_id_base = 0
 
     # The constant below, MIN_RES_IN_SEC, is the length of the minimum reservation, in seconds.  This figure was arrived at by calculating the number of seconds between an early-but-common check-out time (10:00 am) and the change of date at midnight.  The putative customer could, of course, change this to whatever they wanted.
     MIN_RES_IN_SEC = 36000
-
-    #Since all rooms are identical, and we haven't been given any parameters for price variation, it makes sense to assign a default price for the moment.  If the customer needs more options or granularity here, that cna be implemented later
-    PER_NIGHT_PRICE = 100.00
 
     def initialize(start_date, end_date )
       @id = assign_id
@@ -25,7 +22,7 @@ module Hotel
       @hotel_room_id = nil
       @days_booked_am_and_pm = days_with_am_and_pm_occupation
       @total_nights = calculate_total_nights
-      @per_night_price = PER_NIGHT_PRICE
+      @per_night_price = 200.00 # Assigning this as a default, but there is a mechanism for overwriting during reservation creation in FrontDesk.
       @total_reservation_cost = calculate_reservation_price
 
       #THIS IS GOOD, BUT IT BORKS YOUR ABILITY TO TEST CERTAIN THINGS. MAYBE PUT THE VALIDATION MEASURE FOR START-DATES IN THE PAST IN FrontDesk??? OR RESCUE??
@@ -88,13 +85,7 @@ module Hotel
     end
 
     def calculate_reservation_price
-      #I know this isn't exactly best practice for dealing with real-world currency.  But since we haven't covered that yet and this isn't the real world, this is what I'm going with.
-
-      #OK, SO WHAT THIS IS ACTUALLY GOING TO DO IS:
-      #  LOOK UP THE ROOM TO WHICH IT AS ASSIGNED USING HOTEL_ROOM_ID
-      #  FIND THE PRICE AND DISCOUNT OF THAT ROOM
-      #  APPLY THEM HERE.
-       (@total_nights * PER_NIGHT_PRICE).round(2)
+       (@total_nights * @per_night_price).round(2)
     end
   end
 end
