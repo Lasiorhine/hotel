@@ -32,33 +32,52 @@ module Hotel
       return all_rooms
     end
 
-    def find_available_room(start_julian, end_julian)
+    def report_all_reservations_day(date)
     end
 
-    def create_reservation_basic(start_date_juli, end_date_juli, room_id)
+    def report_all_availabile_rooms(start_dt, end_dt)
+    end
+
+    def find_available_room(start_d, end_d)
+
+      proposed_reservation = Hotel::Reservation.new(start_d, end_d)
+      available_room = nil
+      @rooms.each do |room|
+        if available_room == nil
+          availability = room.can_accept_reservation?(proposed_reservation)
+          if availability[:accept] == true
+            available_room = room
+          end
+        end
+      end
+      unless available_room == nil
+        available_room = available_room.room_number
+      end
+      return available_room
+    end
+
+    def create_reservation_basic(start_date, end_date, room_id)
     end
 
     def report_reservation_price(id)
     end
 
-    def report_all_reservations_day(date_julian)
+    def report_all_reservations_day(date)
     end
 
-    def report_all_availabile_rooms(start_dt_julian, end_dt_julian)
+    def report_all_availabile_rooms(start_dt, end_dt)
     end
 
-    def check_availability_for_block(stt_dt_jln, end_dt_jln)
+    def check_availability_for_block(st_dt, end_dt)
     end
 
     def create_room_block(block_size, block_discount)
     end
 
-    def report_available_block_rooms(start_julian, end_julian)
+    def report_available_block_rooms(start_d, end_d)
     end
 
-    def create_reservation_block(start_date_jul, end_date_jul)
+    def create_reservation_block(start_date, end_date)
     end
-
-
   end
 end

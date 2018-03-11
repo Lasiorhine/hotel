@@ -109,6 +109,8 @@ describe "FrontDesk class" do
 
   describe "find_available_room(start_julian, end_julian)" do
 
+    # This method leverages availabiity-checking machinery that already exists in the Reservation class, and that machinery was already heavily tested by the Reservation spec, so it is just given a once-over here.
+
     before do
 
       @room_4000.add_reservation(@reservation_n1_d)
@@ -124,15 +126,16 @@ describe "FrontDesk class" do
 
     it "returns the ID of a room that is available between specified dates" do
 
-      # Julian dates translate to March 12, 3014, and March 21, 3014
-      @front_desk_3.find_available_room("2821971", "2821980").must_equal "1000"
-      # Julian dates translate to November 12, 3015, and November 18, 3015
-      @front_desk_3.find_available_room("2822581", "2822587").must_equal "4000"
+      @front_desk_3.find_available_room("12th Mar 3014", "21st Mar 3014").must_equal "1000"
+
+      @front_desk_3.find_available_room("12th Nov 3015", "18th Nov 3015").must_equal "4000"
+
     end
 
     it "returns nil if no rooms are available between specified dates" do
-      #The julian dates here translate to June 12, 3013, and June 14, 3013
-      @front_desk_3.find_available_room("2821698", "2821700")
+
+      @front_desk_3.find_available_room("12th Jun 3013", "14th Jun 3013")
+
     end
 
   end
