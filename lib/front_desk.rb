@@ -32,14 +32,26 @@ module Hotel
       return all_rooms
     end
 
-    def report_all_reservations_day(date)
+    def whatevs(date)
+      query_date = DateTime.parse(date).jd.to_s
+      overall_report = {}
+      @rooms.each do |room|
+        per_room_report = nil
+        per_room_report = room.report_reservations_for_day(query_date)
+        unless per_room_report == nil
+          resv_id_array = []
+          per_room_report.each {|reservation| resv_id_array << reservation.id }
+          per_room_report = {room.room_number => resv_id_array}
+          overall_report.merge!(per_room_report)
+        end
+      end
+      return overall_report
     end
 
     def report_all_availabile_rooms(start_dt, end_dt)
     end
 
     def find_available_room(start_d, end_d)
-
       proposed_reservation = Hotel::Reservation.new(start_d, end_d)
       available_room = nil
       @rooms.each do |room|
@@ -68,16 +80,16 @@ module Hotel
     def report_all_availabile_rooms(start_dt, end_dt)
     end
 
-    def check_availability_for_block(st_dt, end_dt)
-    end
-
-    def create_room_block(block_size, block_discount)
-    end
-
-    def report_available_block_rooms(start_d, end_d)
-    end
-
-    def create_reservation_block(start_date, end_date)
-    end
+    # def check_availability_for_block(st_dt, end_dt)
+    # end
+    #
+    # def create_room_block(block_size, block_discount)
+    # end
+    #
+    # def report_available_block_rooms(start_d, end_d)
+    # end
+    #
+    # def create_reservation_block(start_date, end_date)
+    # end
   end
 end

@@ -112,6 +112,7 @@ describe "FrontDesk class" do
   describe "report_all_reservations_day(date)" do
 
     before do
+      @room_1000_as.add_reservation(@res_1_fllws_n1_direct)
       @room_4000.add_reservation(@res_2_overlps_n1_begin)
       @room_5000.add_reservation(@res_5_fllws_n1_precedes_n2)
       @room_6000.add_reservation(@res_6_singleton)
@@ -119,20 +120,25 @@ describe "FrontDesk class" do
       @front_desk_3.rooms = [@room_1000_as, @room_4000, @room_5000, @room_6000]
     end
 
-    it "outputs a hash, where the keys are the numbers of reserved rooms, in string form, and the values are the id numbers of their reservations" do
+    it "outputs a hash, where the keys are the numbers of reserved rooms, in string form, and the value of each is an array containing the id numbers of their reservations" do
 
-      # Are we going to just report this as a string, or maybe a hash, yeah, that's it. A hash of rooms and reservation IDS
-      reservation_report_16_jun = @front_desk_3.report_all_reservations_day('16th Jun 3013')
+      reservation_report_16_jun = @front_desk_3.whatevs('16th Jun 3013')
 
       reservation_report_16_jun.must_be_kind_of Hash
       reservation_report_16_jun.count.must_equal 2
+
       reservation_report_16_jun.keys.must_include "1000"
       reservation_report_16_jun.keys.must_include "5000"
+
       reservation_report_16_jun.keys.wont_include "4000"
       reservation_report_16_jun.keys.wont_include "6000"
 
-      reservation_report_16_jun["1000"].must_equal @reservation_n1_a.id
-      reservation_report_16_jun["5000"].must_equal @res_5_fllws_n1_precedes_n2.id
+      reservation_report_16_jun["1000"].must_be_kind_of Array
+      reservation_report_16_jun["1000"].must_include @reservation_n1_a.id
+      reservation_report_16_jun["1000"].must_include @res_1_fllws_n1_direct.id
+
+      reservation_report_16_jun["5000"].must_be_kind_of Array
+      reservation_report_16_jun["5000"].must_include @res_5_fllws_n1_precedes_n2.id
 
     end
 
