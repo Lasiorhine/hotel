@@ -25,9 +25,10 @@ module Hotel
       @hotel_room_id = nil
       @days_booked_am_and_pm = days_with_am_and_pm_occupation
       @total_nights = calculate_total_nights
+      @per_night_price = PER_NIGHT_PRICE
       @total_reservation_cost = calculate_reservation_price
 
-      #THIS IS GOOD, BUT IT EFFS UP YOUR ABILITY TO TEST CERTAIN SHIT. MAYBE PUT THE VALIDATION MEASURE FOR START-DATES IN THE PAST IN FrontDesk??? OR RESCUE??
+      #THIS IS GOOD, BUT IT BORKS YOUR ABILITY TO TEST CERTAIN THINGS. MAYBE PUT THE VALIDATION MEASURE FOR START-DATES IN THE PAST IN FrontDesk??? OR RESCUE??
       ## Commenting out the req about not starting reservations in the past--- for now.
 
       ## GOING TO HAVE THIS LOOK UP THE MIN_RES_IN_SEC on the room to which it is being assigned, using the room numer ID.  YASS.

@@ -200,8 +200,6 @@ describe "FrontDesk class" do
 
   describe "find_available_room(start_d, end_d)" do
 
-
-
     before do
 
       @room_4000.add_reservation(@reservation_n1_d)
@@ -240,20 +238,56 @@ describe "FrontDesk class" do
 
   end
 
-  xdescribe "create_reservation_basic(start_date, end_date, room_id)" do
+  describe "create_reservation_basic(start_date, end_date)" do
+
+    before do
+
+      @new_jan_3014_res = @front_desk_2.create_reservation_basic('2nd Jan 3014', '19th Jan 3014')
+
+    end
 
     it "generates a reservation for a given date range" do
+
+      @new_jan_3014_res.must_be_instance_of Hotel::Reservation
+      @new_jan_3014_res.start_date.must_equal DateTime.parse('2nd Jan 3014')
+      @new_jan_3014_res.end_date.must_equal DateTime.parse('19th Jan 3014')
+
     end
 
-    it "assigns the reservation to the hotel room specified" do
+    it "assigns the reservation to a room that is available for that date range" do
+
+      @new_jan_3014_res.hotel_room_id.must_equal "1000"
+
     end
 
+    it "adds the reservation to the chosen room's collection" do
+
+      @room_1000_as.reservations.must_include @new_jan_3014_res
+    end
+
+    it "assingns the reservation the correct per-night price for the room" do
+
+      @new_jan_3014_res.per_night_price.must_be_within_delta 200.00, 0.001
+
+    end
+
+    it "raises an error if given an end-date that is earlier than its start date" do
+
+      proc{ @front_desk_2.create_reservation_basic('19th Jan 3014','2nd Jan 3014')}.must_raise StandardError
+
+    end
+
+    it "raises an error if given start and and dates that are less than one night apart" do
+
+      proc{ @front_desk_2.create_reservation_basic('19th Jan 3014','19th Jan 3014')}.must_raise StandardError
+
+    end
   end
 
   # I think this is fully covered in the reservation class? But maybe there's a better way?
 
-  # describe "report_reservation_price(id)" do
-  # end
+  xdescribe "report_reservation_price(id)" do
+  end
 
 
 

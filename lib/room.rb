@@ -82,6 +82,13 @@ module Hotel
 
 
     def fix_conflicting_date(conflict_array)
+      # This method needs a better name, but it does something
+      # small but important.  For dates that include the start of
+      # one reservation and the end of another, it creates a date hash
+      # with :am and :pm values of true, which another method then
+      # uses to replace the ones with false-s from the original
+      # reservations. This keeps the can_accept_reservation? method
+      # from going nuts in cases of abutting reservations.
       output_array = conflict_array.map {|d| {d.keys[0] => {:am => true, :pm => true}}}
       return output_array
     end

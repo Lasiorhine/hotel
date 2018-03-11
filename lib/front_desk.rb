@@ -77,7 +77,9 @@ module Hotel
       return room_to_assign
     end
 
-    def create_reservation_basic(start_date, end_date, room_id)
+    def create_reservation_basic(start_date, end_date)
+
+
     end
 
     def report_reservation_price(id)
