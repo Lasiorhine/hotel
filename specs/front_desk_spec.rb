@@ -154,6 +154,8 @@ describe "FrontDesk class" do
 
   describe "report_all_available_rooms(start_dt, end_dt)" do
 
+    # This method leverages availabiity-checking machinery that already exists in the Reservation class, and that machinery was already heavily tested by the Reservation spec, so it is just given a once-over here.
+
     before do
 
       @room_4000.add_reservation(@reservation_n1_d)
@@ -194,14 +196,11 @@ describe "FrontDesk class" do
 
     end
 
-
-
-
   end
 
   describe "find_available_room(start_d, end_d)" do
 
-    # This method leverages availabiity-checking machinery that already exists in the Reservation class, and that machinery was already heavily tested by the Reservation spec, so it is just given a once-over here.
+
 
     before do
 
@@ -216,7 +215,16 @@ describe "FrontDesk class" do
 
     end
 
-    it "returns the ID of a room that is available between specified dates" do
+    it "returns the ID of a room that is available between specified dates in string form" do
+
+      jun_19_jul_23_choice = @front_desk_3.find_available_room("19th Jun 2013", "23rd Jun 2013")
+
+      jun_19_jul_23_choice.must_be_kind_of String
+      jun_19_jul_23_choice.must_equal "1000"
+
+    end
+
+    it "if more than one room is available during a given interval, returns the room with the lowest room number" do
 
       @front_desk_3.find_available_room("12th Mar 3014", "21st Mar 3014").must_equal "1000"
 

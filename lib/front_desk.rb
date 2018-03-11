@@ -66,20 +66,15 @@ module Hotel
     end
 
     def find_available_room(start_d, end_d)
-      proposed_reservation = Hotel::Reservation.new(start_d, end_d)
-      available_room = nil
-      @rooms.each do |room|
-        if available_room == nil
-          availability = room.can_accept_reservation?(proposed_reservation)
-          if availability[:accept] == true
-            available_room = room
-          end
-        end
+
+      room_to_assign = nil
+      rooms_available = report_all_available_rooms(start_d, end_d)
+      unless rooms_available.empty?
+        rooms_by_int = rooms_available.map{ |rm_numb| rm_numb.to_i }
+        rooms_by_int.sort!
+        room_to_assign = rooms_by_int[0].to_s
       end
-      unless available_room == nil
-        available_room = available_room.room_number
-      end
-      return available_room
+      return room_to_assign
     end
 
     def create_reservation_basic(start_date, end_date, room_id)
