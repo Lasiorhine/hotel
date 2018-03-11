@@ -4,7 +4,54 @@ require_relative 'spec_helper'
 describe "FrontDesk class" do
 
   before do
+
     @front_desk_1 = Hotel::FrontDesk.new
+    @front_desk_2 = Hotel::FrontDesk.new
+    @front_desk_3 = Hotel::FrontDesk.new
+
+    @room_1000_as = Hotel::Room.new("1000")
+    @room_2000_bs = Hotel::Room.new("2000")
+    @room_3000_cs = Hotel::Room.new("3000")
+    @room_4000 = Hotel::Room.new("4000")
+    @room_5000 = Hotel::Room.new("5000")
+    @room_6000 = Hotel::Room.new("6000")
+
+    @reservation_n1_a = Hotel::Reservation.new('10th Jun 3013', '16th Jun 3013')
+    @reservation_n2_a = Hotel::Reservation.new('10th Jun 3014', '16th Jun 3014')
+    @reservation_n3_a = Hotel::Reservation.new('10th Oct 3015', '9th Dec 3015')
+
+    @reservation_n1_b = Hotel::Reservation.new('10th Jun 3013', '16th Jun 3013')
+    @reservation_n2_b = Hotel::Reservation.new('10th Jun 3014', '16th Jun 3014')
+    @reservation_n3_b = Hotel::Reservation.new('10th Oct 3015', '9th Dec 3015')
+
+    @reservation_n1_c = Hotel::Reservation.new('10th Jun 3013', '16th Jun 3013')
+    @reservation_n2_c = Hotel::Reservation.new('10th Jun 3014', '16th Jun 3014')
+    @reservation_n3_c = Hotel::Reservation.new('10th Oct 3015', '9th Dec 3015')
+
+    @reservation_n1_d = Hotel::Reservation.new('10th Jun 3013', '16th Jun 3013')
+    @reservation_n2_d = Hotel::Reservation.new('10th Jun 3014', '16th Jun 3014')
+    @reservation_n3_d = Hotel::Reservation.new('10th Oct 3015', '9th Dec 3015')
+
+    @res_0_precede_n1_direct = Hotel::Reservation.new('5th Jun 3013', '10th Jun 3013')
+    @res_1_fllws_n1_direct = Hotel::Reservation.new('16th Jun 3013', '2nd Jul 3013')
+    @res_2_overlps_n1_begin = Hotel::Reservation.new('8th Jun 3013', '11th Jun 3013')
+    @res_3_overlps_n1_end = Hotel::Reservation.new('15th Jun 3013', '5th Jul 3013')
+    @res_4_overlps_n1_precede_n2 = Hotel::Reservation.new('14th Jun 3013', '10th Jun 3014')
+    @res_5_fllws_n1_precedes_n2 = Hotel::Reservation.new('16th Jun 3013', '10th Jun 3014')
+
+    @room_1000_as.add_reservation(@reservation_n1_a)
+    @room_1000_as.add_reservation(@reservation_n2_a)
+    @room_1000_as.add_reservation(@reservation_n3_a)
+
+    @room_2000_bs.add_reservation(@reservation_n1_b)
+    @room_2000_bs.add_reservation(@reservation_n2_b)
+    @room_2000_bs.add_reservation(@reservation_n3_b)
+
+    @rooms_w_nom_res = [@room_1000_as, @room_2000_bs]
+
+    @front_desk_2.rooms = @rooms_w_nom_res
+
+
   end
 
   describe "initialize" do
@@ -14,19 +61,14 @@ describe "FrontDesk class" do
     end
 
     it "can be initialized" do
-
       @front_desk_0.must_be_instance_of Hotel::FrontDesk
-
     end
 
     it "stores an array of instances of room in its @rooms_basic variable equal to the number of rooms in the hotel" do
-
       @front_desk_0.rooms.must_be_kind_of Array
       @front_desk_0.rooms.each {|element| element.must_be_instance_of Hotel::Room}
       @front_desk_0.rooms.count.must_equal 20
-
     end
-
   end
 
   describe "generate_rooms" do
@@ -36,25 +78,19 @@ describe "FrontDesk class" do
     end
 
     it "creates a collection of instances of Room, which it stores in an array." do
-
       @test_rooms_1.must_be_kind_of Array
       @test_rooms_1.each {|element| element.must_be_instance_of Hotel::Room}
-
     end
 
 
     it "gives each room a unique room number, in the form of a string, going from 1 through the total number of rooms in the facility" do
 
-
       rooms_in_order = @test_rooms_1.sort_by {|room| room.room_number.to_i}
-
       rooms_in_order.length.must_equal 20
-
       rooms_in_order.each_with_index do |room, index|
         room.room_number.must_equal (index + 1).to_s
       end
     end
-
   end
 
   describe "report_all_rooms" do
@@ -65,20 +101,38 @@ describe "FrontDesk class" do
 
       room_report.must_be_kind_of Array
       room_report.length.must_equal 20
-
       room_report.each_with_index do |room, index|
         room.room_number.must_equal (index + 1).to_s
       end
-
     end
   end
 
-  xdescribe "find_available_room(start_julian, end_julian)" do
+  describe "find_available_room(start_julian, end_julian)" do
+
+    before do
+
+      @room_4000.add_reservation(@reservation_n1_d)
+      @room_4000.add_reservation(@reservation_n2_d)
+      @room_4000.add_reservation(@res_5_fllws_n1_precedes_n2)
+
+      @room_5000.add_reservation(@reservation_n1_c)
+      @room_5000.add_reservation(@res_1_fllws_n1_direct)
+
+      @front_desk_3.rooms = [@room_1000_as, @room_4000, @room_5000]
+
+    end
 
     it "returns the ID of a room that is available between specified dates" do
+
+      # Julian dates translate to March 12, 3014, and March 21, 3014
+      @front_desk_3.find_available_room("2821971", "2821980").must_equal "1000"
+      # Julian dates translate to November 12, 3015, and November 18, 3015
+      @front_desk_3.find_available_room("2822581", "2822587").must_equal "4000"
     end
 
     it "returns nil if no rooms are available between specified dates" do
+      #The julian dates here translate to June 12, 3013, and June 14, 3013
+      @front_desk_3.find_available_room("2821698", "2821700")
     end
 
   end

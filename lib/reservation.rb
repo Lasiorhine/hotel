@@ -7,7 +7,7 @@ require 'pry'
 
 module Hotel
   class Reservation
-    attr_accessor :start_date, :end_date, :days_booked_am_and_pm
+    attr_accessor :start_date, :end_date, :hotel_room_id, :days_booked_am_and_pm
     attr_reader :id, :total_nights, :total_reservation_cost
 
     @@last_id_base = 0
@@ -22,7 +22,7 @@ module Hotel
       @id = assign_id
       @start_date = DateTime.parse(start_date)
       @end_date = DateTime.parse(end_date)
-      #@hotel_room_id = hotel_room_id
+      @hotel_room_id = nil
       @days_booked_am_and_pm = days_with_am_and_pm_occupation
       @total_nights = calculate_total_nights
       @total_reservation_cost = calculate_reservation_price

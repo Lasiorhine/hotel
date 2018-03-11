@@ -7,7 +7,7 @@ require_relative 'room'
 module Hotel
   class FrontDesk
 
-    attr_reader   :rooms
+    attr_accessor   :rooms
 
     TOTAL_ROOMS_IN_FACILITY = 20
 
