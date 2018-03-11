@@ -77,10 +77,23 @@ module Hotel
       return room_to_assign
     end
 
-    def create_reservation_basic(start_date, end_date)
-
-
+    def look_up_per_night_price_for_room(query_room_numb)
+      target_room = @rooms.find {|room| room.room_number == query_room_numb}
+      target_price = target_room.rate_with_discount
     end
+
+
+    def create_reservation_basic(start_date, end_date)
+      room_for_new_res = find_available_room(start_date, end_date)
+      if room_for_new_res.nil?
+        raise StandardError.new ("Alas, no rooms are available for this reservation.")
+      else
+        new_reservation = Hotel::Reservation.new(start_date, end_date)
+      end
+      new_reservation.hotel_room_id = room_for_new_res
+    end
+
+
 
     def report_reservation_price(id)
     end
