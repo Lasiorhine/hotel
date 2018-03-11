@@ -15,6 +15,7 @@ describe "FrontDesk class" do
     @room_4000 = Hotel::Room.new("4000")
     @room_5000 = Hotel::Room.new("5000")
     @room_6000 = Hotel::Room.new("6000")
+    @room_7000 = Hotel::Room.new("7000")
 
     @reservation_n1_a = Hotel::Reservation.new('10th Jun 3013', '16th Jun 3013')
     @reservation_n2_a = Hotel::Reservation.new('10th Jun 3014', '16th Jun 3014')
@@ -38,6 +39,7 @@ describe "FrontDesk class" do
     @res_3_overlps_n1_end = Hotel::Reservation.new('15th Jun 3013', '5th Jul 3013')
     @res_4_overlps_n1_precede_n2 = Hotel::Reservation.new('14th Jun 3013', '10th Jun 3014')
     @res_5_fllws_n1_precedes_n2 = Hotel::Reservation.new('16th Jun 3013', '10th Jun 3014')
+    @res_6_singleton = Hotel::Reservation.new('23rd Dec 3015', '3rd Jan 3016')
 
     @room_1000_as.add_reservation(@reservation_n1_a)
     @room_1000_as.add_reservation(@reservation_n2_a)
@@ -107,7 +109,38 @@ describe "FrontDesk class" do
     end
   end
 
-  describe "find_available_room(start_julian, end_julian)" do
+  describe "report_all_reservations_day(date)" do
+
+    before do
+      @room_4000.add_reservation(@res_2_overlps_n1_begin)
+      @room_5000.add_reservation(@res_5_fllws_n1_precedes_n2)
+      @room_6000.add_reservation(@res_6_singleton)
+
+      @front_desk_3.rooms = [@room_1000_as, @room_4000, @room_5000, @room_6000]
+    end
+
+    it "outputs a hash, where the keys are the numbers of reserved rooms, in string form, and the values are the id numbers of their reservations" do
+
+      # Are we going to just report this as a string, or maybe a hash, yeah, that's it. A hash of rooms and reservation IDS
+      reservation_report_16_jun = @front_desk_3.report_all_reservations_day('16th Jun 3013')
+
+      reservation_report_16_jun.must_be_kind_of Hash
+      reservation_report_16_jun.count.must_equal 2
+      reservation_report_16_jun.keys.must_include "1000"
+      reservation_report_16_jun.keys.must_include "5000"
+      reservation_report_16_jun.keys.wont_include "4000"
+      reservation_report_16_jun.keys.wont_include "6000"
+
+      reservation_report_16_jun["1000"].must_equal @reservation_n1_a.id
+      reservation_report_16_jun["5000"].must_equal @res_5_fllws_n1_precedes_n2.id
+
+    end
+
+  end
+
+
+
+  describe "find_available_room(start_d, end_d)" do
 
     # This method leverages availabiity-checking machinery that already exists in the Reservation class, and that machinery was already heavily tested by the Reservation spec, so it is just given a once-over here.
 
@@ -134,13 +167,13 @@ describe "FrontDesk class" do
 
     it "returns nil if no rooms are available between specified dates" do
 
-      @front_desk_3.find_available_room("12th Jun 3013", "14th Jun 3013")
+      @front_desk_3.find_available_room("12th Jun 3013", "14th Jun 3013").must_be_nil
 
     end
 
   end
 
-  xdescribe "create_reservation_basic(start_date_juli, end_date_juli, room_id)" do
+  xdescribe "create_reservation_basic(start_date, end_date, room_id)" do
 
     it "generates a reservation for a given date range" do
     end
@@ -155,7 +188,7 @@ describe "FrontDesk class" do
   # describe "report_reservation_price(id)" do
   # end
 
-  xdescribe "report_all_reservations_day(date_julian)" do
+  xdescribe "report_all_reservations_day(date)" do
 
     it "reports a list of reservations for a specified date" do
     end
