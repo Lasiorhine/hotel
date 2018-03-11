@@ -6,14 +6,15 @@ require_relative 'room'
 
 module Hotel
   class FrontDesk
-    attr_reader   :rooms_basic, :rooms_block
-    attr_accessor
+
+    attr_reader   :rooms
 
     TOTAL_ROOMS_IN_FACILITY = 20
 
     def initialize
-      @rooms_basic = generate_rooms
-      @rooms_block = []
+
+      @rooms = generate_rooms
+
     end
 
     def generate_rooms
@@ -27,6 +28,8 @@ module Hotel
     end
 
     def report_all_rooms
+      all_rooms = @rooms
+      return all_rooms
     end
 
     def find_available_room(start_julian, end_julian)

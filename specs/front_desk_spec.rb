@@ -3,30 +3,74 @@ require_relative 'spec_helper'
 
 describe "FrontDesk class" do
 
+  before do
+    @front_desk_1 = Hotel::FrontDesk.new
+  end
+
   describe "initialize" do
 
-    it "stores an array of instances of room in its @rooms_basic variable" do
+    before do
+      @front_desk_0 = Hotel::FrontDesk.new
     end
 
-    it "begins with an empty array as the value of its @rooms_block variable" do
+    it "can be initialized" do
+
+      @front_desk_0.must_be_instance_of Hotel::FrontDesk
+
     end
+
+    it "stores an array of instances of room in its @rooms_basic variable equal to the number of rooms in the hotel" do
+
+      @front_desk_0.rooms.must_be_kind_of Array
+      @front_desk_0.rooms.each {|element| element.must_be_instance_of Hotel::Room}
+      @front_desk_0.rooms.count.must_equal 20
+
+    end
+
   end
 
   describe "generate_rooms" do
 
-    it "creates a collection of instances of room, which it stores in an array." do
+    before do
+      @test_rooms_1 = @front_desk_1.generate_rooms
     end
 
+    it "creates a collection of instances of Room, which it stores in an array." do
+
+      @test_rooms_1.must_be_kind_of Array
+      @test_rooms_1.each {|element| element.must_be_instance_of Hotel::Room}
+
+    end
+
+
     it "gives each room a unique room number, in the form of a string, going from 1 through the total number of rooms in the facility" do
+
+
+      rooms_in_order = @test_rooms_1.sort_by {|room| room.room_number.to_i}
+
+      rooms_in_order.length.must_equal 20
+
+      rooms_in_order.each_with_index do |room, index|
+        room.room_number.must_equal (index + 1).to_s
+      end
     end
 
   end
 
-  xdescribe "report_all_rooms" do
+  describe "report_all_rooms" do
 
     it "reports a complete list of all the rooms in the facility" do
-    end
 
+      room_report = @front_desk_1.report_all_rooms.sort_by {|room| room.room_number.to_i}
+
+      room_report.must_be_kind_of Array
+      room_report.length.must_equal 20
+
+      room_report.each_with_index do |room, index|
+        room.room_number.must_equal (index + 1).to_s
+      end
+
+    end
   end
 
   xdescribe "find_available_room(start_julian, end_julian)" do
