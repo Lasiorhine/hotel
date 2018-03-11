@@ -10,12 +10,10 @@ module Hotel
     attr_accessor
 
     TOTAL_ROOMS_IN_FACILITY = 20
-    BASE_RATE = 200.00
-    MINIMUM_RES_IN_SECONDS = 36000
 
     def initialize
       @rooms_basic = generate_rooms
-      @rooms_block
+      @rooms_block = []
     end
 
     def generate_rooms
@@ -24,16 +22,16 @@ module Hotel
     def report_all_rooms
     end
 
-    def create_reservation_basic(start_date_juli, end_date_juli)
+    def find_available_room(start_julian, end_julian)
+    end
+
+    def create_reservation_basic(start_date_juli, end_date_juli, room_id)
     end
 
     def report_reservation_price(id)
     end
 
     def report_all_reservations_day(date_julian)
-    end
-
-    def report_all_reservations_room(room)
     end
 
     def report_all_availabile_rooms(start_dt_julian, end_dt_julian)
