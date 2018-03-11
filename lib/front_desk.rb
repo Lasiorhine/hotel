@@ -17,6 +17,13 @@ module Hotel
     end
 
     def generate_rooms
+      room_array = []
+      for i in 1 .. TOTAL_ROOMS_IN_FACILITY
+        room_number = i.to_s
+        new_room = Hotel::Room.new(room_number)
+        room_array << new_room
+      end
+      return room_array
     end
 
     def report_all_rooms

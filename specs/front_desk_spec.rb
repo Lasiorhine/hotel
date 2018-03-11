@@ -22,14 +22,14 @@ describe "FrontDesk class" do
 
   end
 
-  describe "report_all_rooms" do
+  xdescribe "report_all_rooms" do
 
     it "reports a complete list of all the rooms in the facility" do
     end
 
   end
 
-  describe "find_available_room(start_julian, end_julian)" do
+  xdescribe "find_available_room(start_julian, end_julian)" do
 
     it "returns the ID of a room that is available between specified dates" do
     end
@@ -39,7 +39,7 @@ describe "FrontDesk class" do
 
   end
 
-  describe "create_reservation_basic(start_date_juli, end_date_juli, room_id)" do
+  xdescribe "create_reservation_basic(start_date_juli, end_date_juli, room_id)" do
 
     it "generates a reservation for a given date range" do
     end
@@ -54,14 +54,14 @@ describe "FrontDesk class" do
   # describe "report_reservation_price(id)" do
   # end
 
-  describe "report_all_reservations_day(date_julian)" do
+  xdescribe "report_all_reservations_day(date_julian)" do
 
     it "reports a list of reservations for a specified date" do
     end
 
   end
 
-  describe "report_all_available_rooms(start_dt_julian, end_dt_julian)" do
+  xdescribe "report_all_available_rooms(start_dt_julian, end_dt_julian)" do
 
     it "reports a list of rooms that are available for a given date range" do
     end
