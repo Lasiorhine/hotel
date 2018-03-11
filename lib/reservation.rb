@@ -18,16 +18,19 @@ module Hotel
     #Since all rooms are identical, and we haven't been given any parameters for price variation, it makes sense to assign a default price for the moment.  If the customer needs more options or granularity here, that cna be implemented later
     PER_NIGHT_PRICE = 100.00
 
-    def initialize(start_date, end_date)
+    def initialize(start_date, end_date )
       @id = assign_id
       @start_date = DateTime.parse(start_date)
       @end_date = DateTime.parse(end_date)
+      #@hotel_room_id = hotel_room_id
       @days_booked_am_and_pm = days_with_am_and_pm_occupation
       @total_nights = calculate_total_nights
       @total_reservation_cost = calculate_reservation_price
 
       #THIS IS GOOD, BUT IT EFFS UP YOUR ABILITY TO TEST CERTAIN SHIT. MAYBE PUT THE VALIDATION MEASURE FOR START-DATES IN THE PAST IN FrontDesk??? OR RESCUE??
       ## Commenting out the req about not starting reservations in the past--- for now.
+
+      ## GOING TO HAVE THIS LOOK UP THE MIN_RES_IN_SEC on the room to which it is being assigned, using the room numer ID.  YASS.
       if (@end_date.to_time.to_i - @start_date.to_time.to_i) < MIN_RES_IN_SEC #|| @start_date.to_time.to_i < Time.now.to_i
         raise StandardError.new("A reservation's end date must come after its start date, and it must be at least one night long.")
       end
@@ -85,6 +88,11 @@ module Hotel
 
     def calculate_reservation_price
       #I know this isn't exactly best practice for dealing with real-world currency.  But since we haven't covered that yet and this isn't the real world, this is what I'm going with.
+
+      #OK, SO WHAT THIS IS ACTUALLY GOING TO DO IS:
+      #  LOOK UP THE ROOM TO WHICH IT AS ASSIGNED USING HOTEL_ROOM_ID
+      #  FIND THE PRICE AND DISCOUNT OF THAT ROOM
+      #  APPLY THEM HERE.
        (@total_nights * PER_NIGHT_PRICE).round(2)
     end
   end

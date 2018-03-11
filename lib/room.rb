@@ -6,7 +6,8 @@ require_relative 'front_desk'
 
 module Hotel
   class Room
-    attr_accessor :room_number, :reservations, :dates_unavailable
+    attr_reader :room_number
+    attr_accessor :reservations, :dates_unavailable
 
     def initialize(room_number)
       @room_number = room_number
@@ -30,11 +31,6 @@ module Hotel
       end
       return report
     end
-            #
-            #
-            #       def self.find(query_id)
-            #   found_order = Grocery::Order.all.find {|order_instance| order_instance.id == query_id}
-            #   return found_order
 
     def can_accept_reservation?(reservation)
       reservation_acceptable = {:accept => true, :resolve_conflict => false}
@@ -76,6 +72,8 @@ module Hotel
       end
       return reservation_acceptable
     end
+
+
     def fix_conflicting_date(conflict_array)
       output_array = conflict_array.map {|d| {d.keys[0] => {:am => true, :pm => true}}}
       return output_array

@@ -43,7 +43,6 @@ describe "Room class" do
 
   describe "report_all_reservations" do
 
-    #THIS IS WHERE AN IMPORTANT HANDSHAKE BETWEEN RESERVATION AND ROOM NEEDS TO HAPPEN.
     it "returns a complete collection of reservations for the room" do
       all_nominal_reservations = [@reservation_n1_nominal, @reservation_n2_nominal, @reservation_n3_nominal]
       @room_300_nominal.reservations = all_nominal_reservations
@@ -61,6 +60,7 @@ describe "Room class" do
 
       @room_300_nominal.add_reservation(@reservation_n1_nominal)
       @room_300_nominal.add_reservation(@reservation_1_follows_n1_directly)
+      @room_300_nominal.add_reservation(@reservation_n3_nominal)
 
     end
 
@@ -70,6 +70,7 @@ describe "Room class" do
       jun_12_reservations.must_be_kind_of Array
       jun_12_reservations.length.must_equal 1
       jun_12_reservations.must_include @reservation_n1_nominal
+
     end
 
     it "accurately reports reservations when run for a day on which one reservation begins and another ends" do
@@ -89,7 +90,6 @@ describe "Room class" do
       xmas_3075_reservations.must_be_nil
 
     end
-
   end
 
   describe "can_accept_reservation?(reservation)" do
@@ -167,7 +167,7 @@ describe "Room class" do
 
     end
 
-    it "gives a value of {:accept => false, :resolve_conflict => [foo1, foo2], where foo1 and foo2 are hashes of the dates of the start-date/end-date overlaps, when a proposed reservation starts on the day an existing reservation ends, and ends on the day an existing reservation starts" do
+    it "gives a value of {:accept => false, :resolve_conflict => [foo1, foo2], where foo1 and foo2 are hashes of the dates of acceptable start-date/end-date overlaps, when a proposed reservation begins on the day an existing reservation ends, and ends on the day an existing reservation begins" do
 
       @room_300_nominal.add_reservation(@reservation_n2_nominal)
       in_middle_result = @room_300_nominal.can_accept_reservation?(@reservation_5_follows_n1_precedes_n2)
@@ -176,9 +176,11 @@ describe "Room class" do
       in_middle_result[:resolve_conflict].must_be_kind_of Array
       in_middle_result[:resolve_conflict].count.must_equal 2
       in_middle_result[:resolve_conflict][0].must_be_kind_of Hash
+
       # Note:  This number is the date of the first start-end overlap, respresented as a Julian date in string form.
       in_middle_result[:resolve_conflict][0].keys.must_include "2821702"
       in_middle_result[:resolve_conflict][1].must_be_kind_of Hash
+
       # Note:  This number is the date of the second start-end overlap, respresented as a Julian date in string form.
       in_middle_result[:resolve_conflict][1].keys.must_include "2822061"
     end
@@ -240,7 +242,7 @@ describe "Room class" do
   describe "add_reservation(new_reservation)" do
 
 
-    it "must add itself to the room's collection of reservations" do
+    it "adds itself to the room's collection of reservations" do
 
       @room_300_nominal.reservations << @reservation_n1_nominal
       before_reservations = @room_300_nominal.reservations.dup
@@ -309,8 +311,6 @@ describe "Room class" do
       dates_after_adding_and_conf_res["2821702"][:pm].must_equal true
 
     end
-
-
 
   end
 end
