@@ -319,9 +319,9 @@ describe "FrontDesk class" do
 
       @front_desk_3.rooms = [@room_1000_as, @room_6000, @room_2000_bs]
 
-      @qres_price_query_id = @res_6_singleton.id
+      @res_price_query_id = @res_6_singleton.id
 
-      @reported_price = @front_desk_3.report_reservation_price(@res_price_query_id)
+      @reported_price = @front_desk_3.find_reservation_price(@res_price_query_id)
     end
 
     it "identifies returns a float" do
@@ -330,6 +330,10 @@ describe "FrontDesk class" do
 
     it "correctly reports the price of a reservation" do
       @reported_price.must_be_within_delta 2200.00, 0.003
+    end
+
+    it "returns nil if the reservation id does not exist" do
+      @front_desk_3.find_reservation_price("1111111111111").must_be_nil
     end
   end
 end

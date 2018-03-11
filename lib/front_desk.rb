@@ -107,10 +107,22 @@ module Hotel
 
 
 
-    def report_reservation_price(id)
+    def find_reservation_price(query_id)
 
+      target_reservation = nil
+      price_of_target = nil
+      @rooms.each do |room|
+        unless target_reservation != nil
+          room.reservations.each do |reservation|
+            if reservation.id == query_id
+              target_reservation = reservation
+              price_of_target = target_reservation.total_reservation_cost
+            end
+          end
+        end
+      end
+      return price_of_target
     end
-
 
 
     # def check_availability_for_block(st_dt, end_dt)
