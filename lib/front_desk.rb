@@ -82,6 +82,10 @@ module Hotel
       target_price = target_room.rate_with_discount
     end
 
+    def locate_room_by_id(query_rm_numb)
+      target_room = @rooms.find {|room| room.room_number == query_rm_numb}
+      return target_room
+    end
 
     def create_reservation_basic(start_date, end_date)
       room_for_new_res = find_available_room(start_date, end_date)
@@ -91,6 +95,10 @@ module Hotel
         new_reservation = Hotel::Reservation.new(start_date, end_date)
       end
       new_reservation.hotel_room_id = room_for_new_res
+      new_reservation.per_night_price = look_up_per_night_price_for_room(room_for_new_res)
+      room_object = @rooms.find {|room| room.room_number == room_for_new_res}
+      room_object.add_reservation(new_reservation)
+      return new_reservation
     end
 
 

@@ -293,6 +293,23 @@ describe "FrontDesk class" do
     end
   end
 
+  describe "locate_room_by_id(query_rm_numb)" do
+
+    before do
+      @rm_2000_object= @front_desk_2.locate_room_by_id("2000")
+    end
+
+    it "returns an instance of Hotel::Room" do
+      @rm_2000_object.must_be_instance_of Hotel::Room
+    end
+
+    it "identifies the correct instance of Room." do
+
+      @rm_2000_object.must_be_same_as @room_2000_bs
+
+    end
+  end
+
   # I think this is fully covered in the reservation class? But maybe there's a better way?
 
   xdescribe "report_reservation_price(id)" do
