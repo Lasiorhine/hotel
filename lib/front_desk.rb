@@ -32,7 +32,7 @@ module Hotel
       return all_rooms
     end
 
-    def whatevs(date)
+    def find_all_reservations_for_date(date)
       query_date = DateTime.parse(date).jd.to_s
       overall_report = {}
       @rooms.each do |room|

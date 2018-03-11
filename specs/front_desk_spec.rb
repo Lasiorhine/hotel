@@ -122,7 +122,7 @@ describe "FrontDesk class" do
 
     it "outputs a hash, where the keys are the numbers of reserved rooms, in string form, and the value of each is an array containing the id numbers of their reservations" do
 
-      reservation_report_16_jun = @front_desk_3.whatevs('16th Jun 3013')
+      reservation_report_16_jun = @front_desk_3.find_all_reservations_for_date('16th Jun 3013')
 
       reservation_report_16_jun.must_be_kind_of Hash
       reservation_report_16_jun.count.must_equal 2
@@ -139,6 +139,15 @@ describe "FrontDesk class" do
 
       reservation_report_16_jun["5000"].must_be_kind_of Array
       reservation_report_16_jun["5000"].must_include @res_5_fllws_n1_precedes_n2.id
+
+    end
+
+    it "returns an empty hash when there are no rooms reserved for a given day" do
+
+      reservation_report_1_jan = @front_desk_3.find_all_reservations_for_date('1st  Jan 4047')
+
+      reservation_report_1_jan.must_be_kind_of Hash
+      reservation_report_1_jan.must_be_empty
 
     end
 
