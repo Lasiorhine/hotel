@@ -182,8 +182,18 @@ module Hotel
       return available_block_rooms
     end
 
+    # RIGHT HERE IS WHERE I RAN OUT OF GAS.
 
-    def create_reservation_within_block(start_date, end_date, block_id)
-    end
+    #I ALMOST GOT THROGUH WAVE 3, but at 6:00 am, I just had nothing left.
+
+
+    # def create_reservation_within_block(start_date, end_date, block_id)
+    #   rooms_available = check_availability_within_block(start_date, end_date, block_id)
+    #   room_instances_for_reservation = rooms_available.map {|id| @blocks.find }
+    #
+    #
+    #   new_block_reservation = create_reservation_basic(start_date, end_date, rooms_available)
+    #   return new_block_reservation
+    # end
   end
 end

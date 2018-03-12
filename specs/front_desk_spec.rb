@@ -544,4 +544,33 @@ describe "FrontDesk class" do
       # COME BACK TO THIS AFTER YOU HAVE RESERVATION ADD WORKING
     end
   end
+
+  xdescribe "create_reservation_within_block(start_date, end_date, block_id)" do
+
+    #NOTES:  THIS IS WHERE THE WHEELS FELL OFF FOR ME.  I GOT ALMOST ALL THE WAY THROUGH, BUT EXHAUSTION FINALLY WON.
+
+
+    before do
+      @room_3000_cs.add_reservation(@reservation_n1_c)
+      @room_3000_cs.add_reservation(@reservation_n2_c)
+      @room_3000_cs.add_reservation(@reservation_n3_c)
+
+      @three_rooms_identical_avail = [@room_1000_as, @room_2000_bs, @room_3000_cs]
+
+      @front_desk_3.rooms = @three_rooms_identical_avail
+
+      @valid_block = @front_desk_3.create_room_block('1st Mar 3015', '10th Mar 3015', 3, @front_desk_3.rooms, 0.2)
+
+      @valid_block_id = @valid_block.keys[0]
+
+      @block_reservation_req_result = @front_desk_3.create_reservation_within_block('4th Mar 3015', '7th Mar 3015', @valid_block_id)
+    end
+
+    it "returns an instance of Hotel::Reservation" do
+
+
+      @block_reservation_req_result.must_be_instance_of Hotel::Reservation
+
+    end
+  end
 end
