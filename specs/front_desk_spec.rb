@@ -336,24 +336,83 @@ describe "FrontDesk class" do
       @front_desk_3.find_reservation_price("1111111111111").must_be_nil
     end
   end
+
+
+  describe "check_block_feasibility(st_dt, end_dt, block_size)" do
+
+    before do
+
+      @room_3000_cs.add_reservation(@reservation_n1_c)
+      @room_3000_cs.add_reservation(@reservation_n2_c)
+      @room_3000_cs.add_reservation(@reservation_n3_c)
+
+      @three_rooms_identical_avail = [@room_1000_as, @room_2000_bs, @room_3000_cs]
+
+      @front_desk_3.rooms = @three_rooms_identical_avail
+
+      @three_ident_feasible = @front_desk_3.check_block_feasibility('1st Mar 3015', '10th Mar 3015', 3)
+
+
+      @three_ident_infeas = @front_desk_3.check_block_feasibility('1st Nov 3015', '10th Nov 3015', 3)
+
+    end
+
+    it "returns a hash containing a single key-value pair, whether a block of rooms is available or not." do
+
+      @three_ident_feasible.must_be_kind_of Hash
+      @three_ident_infeas.must_be_kind_of Hash
+
+      @three_ident_feasible.count.must_equal 1
+      @three_ident_infeas.count.must_equal 1
+
+    end
+
+    it "has a key with the value :yes when rooms are available for the block" do
+
+      @three_ident_feasible.keys.must_include :yes
+
+    end
+
+    it "has a key with the value :no when not enough rooms are available for the block" do
+
+      @three_ident_infeas.keys.must_include :no
+
+    end
+
+    it "when rooms are available for the block, returns a key-value where the value is an array of the room numbers of available rooms" do
+
+      @three_ident_feasible[:yes].must_be_kind_of Array
+      @three_ident_feasible[:yes].each {|element| element.must_be_kind_of String}
+      @three_ident_feasible[:yes].each {|element| element.must_match /^\d+$/ }
+
+    end
+
+    it "accurately reports the room numbers of rooms available for the block" do
+
+      @three_ident_feasible[:yes].length.must_equal 3
+      @three_ident_feasible[:yes].must_include "1000"
+      @three_ident_feasible[:yes].must_include "2000"
+      @three_ident_feasible[:yes].must_include "3000"
+    end
+
+    it "returns a key-value pair with an empty array as the value if not enough rooms are available for the block" do
+
+      @three_ident_infeas[:no].must_be_kind_of Array
+      @three_ident_infeas[:no].must_be_empty
+
+    end
+  end
+
+  describe "create_room_block(block_size, block_discount)" do
+  end
+
+  describe "report_available_rooms_within_block" do
+  end
+
+  describe "create_reservation_block(start_date_jul, end_date_jul)" do
+  end
+
 end
-
-
-
-  #NOT EVEN GOING TO THINK ABOUT THIS PART RIGHT NOW.
-  # describe "check_availability_for_block" do
-  # end
-  #
-  # describe "create_room_block(block_size, block_discount)" do
-  # end
-  #
-  # describe "report_available_block_rooms" do
-  # end
-  #
-  # describe "create_reservation_block(start_date_jul, end_date_jul)" do
-  # end
-
-
 
 
 

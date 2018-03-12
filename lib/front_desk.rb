@@ -125,16 +125,21 @@ module Hotel
     end
 
 
-    # def check_availability_for_block(st_dt, end_dt)
-    # end
-    #
-    # def create_room_block(block_size, block_discount)
-    # end
-    #
-    # def report_available_block_rooms(start_d, end_d)
-    # end
-    #
-    # def create_reservation_block(start_date, end_date)
-    # end
+    def check_block_feasibility(st_dt, end_dt, block_size)
+      block_y_or_n = nil
+      elig_for_block = report_all_available_rooms(st_dt, end_dt)
+      if elig_for_block.length >= block_size
+        block_y_or_n = {:yes => elig_for_block}
+      else
+        block_y_or_n = {:no => []}
+      end
+      return block_y_or_n
+    end
+
+    def create_room_block(st_date, end_date, block_discount)
+    end
+
+    def create_reservation_block(start_date, end_date)
+    end
   end
 end
