@@ -7,13 +7,14 @@ require_relative 'room'
 module Hotel
   class FrontDesk
 
-    attr_accessor   :rooms
+    attr_accessor   :rooms, :blocks
 
     TOTAL_ROOMS_IN_FACILITY = 20
 
     def initialize
 
       @rooms = generate_rooms
+      @blocks = []
 
     end
 
@@ -107,6 +108,7 @@ module Hotel
 
 
 
+
     def find_reservation_price(query_id)
 
       target_reservation = nil
@@ -136,10 +138,43 @@ module Hotel
       return block_y_or_n
     end
 
-    def create_room_block(st_date, end_date, block_discount)
+    def create_placeholder_res(start_date, end_date, room_id, block_id)
+
+      reservation_for_block = Hotel::Reservation.new(start_date, end_date)
+
+      reservation_for_block.hotel_room_id = room_id
+      reservation_for_block.block_set_aside = true
+      reservation_for_block.block_id = block_id
+
+      return reservation_for_block
     end
 
-    def create_reservation_block(start_date, end_date)
+    # def create_room_block(st_date, end_date, block_size, block_discount)
+    #   feasability_result = check_block_feasibility(st_date, end_date, block_size)
+    #   if feasability_result.keys.include?(:no)
+    #     raise StandardError.new("There are not enough available rooms to create this block")
+    #   else
+    #     block_id = Hotel::Reservation.assign_id(Hotel::Reservation.last_block_base)
+    #     Hotel::Reservation.last_block_base += 1
+    #     rooms_available_for_block = feasability_result[:yes]
+    #     rooms_reserved_in_block = []
+    #     rooms_available_for_block block_size.times do |room_id|
+    #       room_for_block = locate_room_by_id(room_id)
+    #       placeholder_res = create_block_placeholder_reservation(st_date, end_date, room_id, block_id)
+    #       room_for_block.add_reservation(placeholder_res)
+    #       block_availability_object = Hotel::BlockRoom.new(room_id, block_id, block_discount, block_start, block_end)
+    #       rooms_reserved_in_block << block_availability_object
+    #     end
+    #     block = {block_id.to_sym => rooms_reserved_in_block}
+    #   end
+    #   return block
+    # end
+
+    def check_availability_within_block(start_date, end_date, block_id)
+    end
+
+
+    def create_reservation_within_block(start_date, end_date, block_id)
     end
   end
 end

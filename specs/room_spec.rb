@@ -39,6 +39,10 @@ describe "Room class" do
     it "must store its reservations in an array" do
       @room_300_nominal.reservations.must_be_kind_of Array
     end
+    it "must have a @block_set_asides variable that begins as an empty array " do
+      @room_300_nominal.block_set_asides.must_be_kind_of Array
+      @room_300_nominal.block_set_asides.must_be_empty
+    end
   end
 
   describe "report_all_reservations" do

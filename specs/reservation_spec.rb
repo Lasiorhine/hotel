@@ -25,7 +25,13 @@ describe "Reservation class" do
       @reservation_0_nominal_6n.end_date.must_be_instance_of DateTime
     end
 
+    it "has a default value of false for @block_set_aside" do
+      @reservation_0_nominal_6n.block_set_aside.must_equal false
+    end
 
+    it "has a default value of nil for @block_id" do
+      @reservation_0_nominal_6n.block_id.must_be_nil
+    end
 
     it "raises an error if the end date is not at least one day after the end date" do
       late_start = '3rd May 3075'

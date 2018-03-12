@@ -7,7 +7,7 @@ require_relative 'front_desk'
 module Hotel
   class Room
     attr_reader :room_number, :base_resv_price, :min_res_sec, :rate_with_discount
-    attr_accessor :discount, :reservations, :dates_unavailable
+    attr_accessor :discount, :reservations, :dates_unavailable, :block_set_asides
 
     BASE_RESERV_PRICE = 200.00
     MIN_RESERV_SECONDS = 36000
@@ -20,6 +20,7 @@ module Hotel
       @rate_with_discount = BASE_RESERV_PRICE - (BASE_RESERV_PRICE * @discount)
       @reservations = []
       @dates_unavailable = {}
+      @block_set_asides = []
     end
 
     def report_all_reservations

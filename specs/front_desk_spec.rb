@@ -1,4 +1,5 @@
 require 'date'
+require 'pry'
 require_relative 'spec_helper'
 
 describe "FrontDesk class" do
@@ -8,6 +9,7 @@ describe "FrontDesk class" do
     @front_desk_1 = Hotel::FrontDesk.new
     @front_desk_2 = Hotel::FrontDesk.new
     @front_desk_3 = Hotel::FrontDesk.new
+    @front_desk_4 = Hotel::FrontDesk.new
 
     @room_1000_as = Hotel::Room.new("1000")
     @room_2000_bs = Hotel::Room.new("2000")
@@ -71,6 +73,15 @@ describe "FrontDesk class" do
       @front_desk_0.rooms.must_be_kind_of Array
       @front_desk_0.rooms.each {|element| element.must_be_instance_of Hotel::Room}
       @front_desk_0.rooms.count.must_equal 20
+    end
+
+    it "has an instance variable, @blocks, which begins as an empty array" do
+
+
+      @front_desk_0.blocks.must_be_kind_of Array
+
+      @front_desk_0.blocks.must_be_empty
+
     end
   end
 
@@ -403,30 +414,41 @@ describe "FrontDesk class" do
     end
   end
 
-  describe "create_room_block(block_size, block_discount)" do
-  end
+  describe "create_block_placeholder_res(start_date, end_date, room_id, block_id)" do
 
-  describe "report_available_rooms_within_block" do
-  end
 
-  describe "create_reservation_block(start_date_jul, end_date_jul)" do
-  end
+    before do
 
+
+      @placeholder_reservation = @front_desk_4.create_placeholder_res('12th Jan 2099', '19th Jan 2099', '7000', '8')
+
+
+    end
+
+    it "is an instance of Reservation" do
+
+      @placeholder_reservation.must_be_instance_of Hotel::Reservation
+
+    end
+
+    it "has a start date and an end date that are instances of Ruby's DateTime class" do
+
+      @placeholder_reservation.start_date.must_be_instance_of DateTime
+      @placeholder_reservation.end_date.must_be_instance_of DateTime
+
+    end
+
+    it "has a value of true for its @block_set_aside instance variable" do
+
+      @placeholder_reservation.block_set_aside.must_equal true
+
+    end
+
+    it "has a @block_id variable that takes a number in string form as its value" do
+
+      @placeholder_reservation.block_id.must_be_kind_of String
+      @placeholder_reservation.block_id.must_match /^\d+$/
+
+    end
+  end
 end
-
-
-
-
-
-
-
-
-
-
-
-# Note:  COMMENTING THIS OUT FOR NOW.  WILL PROBABLY move this functionality to FrontDesk.
-# it "Raises an error if the start date comes before the date of instantiation" do
-#   too_early_start = '1st Feb 1975'
-#   acceptible_end = '2nd Feb 3080'
-#   proc{ Hotel::Reservation.new(too_early_start, acceptible_end) }.must_raise StandardError
-# end
