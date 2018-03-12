@@ -50,10 +50,10 @@ module Hotel
       return overall_report
     end
 
-    def report_all_available_rooms(start_dt, end_dt)
+    def report_all_available_rooms(start_dt, end_dt, room_set)
       imaginary_reservation = Hotel::Reservation.new(start_dt, end_dt)
       all_available_rooms = []
-      @rooms.each do |room|
+      room_set.each do |room|
         available_room = nil
         availability = room.can_accept_reservation?(imaginary_reservation)
         if availability[:accept] == true
@@ -67,10 +67,10 @@ module Hotel
       return all_available_rooms
     end
 
-    def find_available_room(start_d, end_d)
+    def find_available_room(start_d, end_d, room_set)
 
       room_to_assign = nil
-      rooms_available = report_all_available_rooms(start_d, end_d)
+      rooms_available = report_all_available_rooms(start_d, end_d, room_set)
       unless rooms_available.empty?
         rooms_by_int = rooms_available.map{ |rm_numb| rm_numb.to_i }
         rooms_by_int.sort!
@@ -89,8 +89,8 @@ module Hotel
       return target_room
     end
 
-    def create_reservation_basic(start_date, end_date)
-      room_numb_for_new_res = find_available_room(start_date, end_date)
+    def create_reservation_basic(start_date, end_date, room_set)
+      room_numb_for_new_res = find_available_room(start_date, end_date, room_set)
       if room_numb_for_new_res.nil?
         raise StandardError.new ("Alas, no rooms are available for this reservation.")
       else
@@ -128,9 +128,9 @@ module Hotel
     end
 
 
-    def check_block_feasibility(st_dt, end_dt, block_size)
+    def check_block_feasibility(st_dt, end_dt,room_set, block_size)
       block_y_or_n = nil
-      elig_for_block = report_all_available_rooms(st_dt, end_dt)
+      elig_for_block = report_all_available_rooms(st_dt, end_dt, room_set)
       if elig_for_block.length >= block_size
         block_y_or_n = {:yes => elig_for_block}
       else
@@ -150,8 +150,8 @@ module Hotel
       return reservation_for_block
     end
 
-    def create_room_block(st_date, end_date, block_size, block_discount)
-      feasability_result = check_block_feasibility(st_date, end_date, block_size)
+    def create_room_block(st_date, end_date, block_size, room_set, block_discount)
+      feasability_result = check_block_feasibility(st_date, end_date, room_set, block_size)
       if feasability_result.keys.include?(:no)
         raise StandardError.new("There are not enough available rooms to create this block")
       else
@@ -166,6 +166,7 @@ module Hotel
           placeholder_res = create_placeholder_res(st_date, end_date, room_id, block_id)
           room_for_block.add_reservation(placeholder_res)
           block_availability_object = Hotel::BlockRoom.new(room_id, block_id, block_discount, st_date, end_date)
+          block_availability_object.discount = block_discount
           rooms_reserved_in_block << block_availability_object
         end
         block = {block_id.to_sym => rooms_reserved_in_block}
@@ -175,6 +176,10 @@ module Hotel
     end
 
     def check_availability_within_block(start_date, end_date, block_id)
+      block_key = block_id.to_sym
+      target_block = @blocks.find {|element| element.has_key?(block_key)}
+      available_block_rooms = report_all_available_rooms(start_date, end_date, target_block.values[0])
+      return available_block_rooms
     end
 
 

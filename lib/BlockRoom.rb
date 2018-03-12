@@ -7,7 +7,10 @@ module Hotel
 
     attr_accessor :discount, :reservations, :dates_unavailable
 
+
     def initialize(room_number, block_id, discount, block_start, block_end)
+
+      super(room_number)
 
       @room_number = room_number.concat("-B")
       @block_id = block_id

@@ -164,7 +164,7 @@ describe "FrontDesk class" do
     end
   end
 
-  describe "report_all_available_rooms(start_dt, end_dt)" do
+  describe "report_all_available_rooms(start_dt, end_dt, room_set)" do
 
     # This method leverages availabiity-checking machinery that already exists in the Reservation class, and that machinery was already heavily tested by the Reservation spec, so it is just given a once-over here.
 
@@ -184,13 +184,13 @@ describe "FrontDesk class" do
 
     it "returns an array" do
 
-      @front_desk_3.report_all_available_rooms("12 Jan 2099", "12 May 2099").must_be_kind_of Array
+      @front_desk_3.report_all_available_rooms("12 Jan 2099", "12 May 2099", @front_desk_3.rooms).must_be_kind_of Array
 
     end
 
     it "returns a collection of room numbers for the rooms available between specified dates" do
 
-      aug_3013_rept =  @front_desk_3.report_all_available_rooms("1 Aug 3013", "17 Aug 3013")
+      aug_3013_rept =  @front_desk_3.report_all_available_rooms("1 Aug 3013", "17 Aug 3013", @front_desk_3.rooms)
 
       aug_3013_rept.count.must_equal 3
 
@@ -204,13 +204,13 @@ describe "FrontDesk class" do
 
     it "returns an empty array if no rooms are available between specified dates" do
 
-      @front_desk_3.report_all_available_rooms("12th Jun 3013", "14th Jun 3013").must_be_empty
+      @front_desk_3.report_all_available_rooms("12th Jun 3013", "14th Jun 3013", @front_desk_3.rooms).must_be_empty
 
     end
 
   end
 
-  describe "find_available_room(start_d, end_d)" do
+  describe "find_available_room(start_d, end_d, room_set)" do
 
     before do
 
@@ -227,7 +227,7 @@ describe "FrontDesk class" do
 
     it "returns the ID of a room that is available between specified dates in string form" do
 
-      jun_19_jul_23_choice = @front_desk_3.find_available_room("19th Jun 2013", "23rd Jun 2013")
+      jun_19_jul_23_choice = @front_desk_3.find_available_room("19th Jun 2013", "23rd Jun 2013", @front_desk_3.rooms)
 
       jun_19_jul_23_choice.must_be_kind_of String
       jun_19_jul_23_choice.must_equal "1000"
@@ -236,24 +236,24 @@ describe "FrontDesk class" do
 
     it "if more than one room is available during a given interval, returns the room with the lowest room number" do
 
-      @front_desk_3.find_available_room("12th Mar 3014", "21st Mar 3014").must_equal "1000"
+      @front_desk_3.find_available_room("12th Mar 3014", "21st Mar 3014", @front_desk_3.rooms).must_equal "1000"
 
-      @front_desk_3.find_available_room("12th Nov 3015", "18th Nov 3015").must_equal "4000"
+      @front_desk_3.find_available_room("12th Nov 3015", "18th Nov 3015", @front_desk_3.rooms).must_equal "4000"
 
     end
 
     it "returns nil if no rooms are available between specified dates" do
 
-      @front_desk_3.find_available_room("12th Jun 3013", "14th Jun 3013").must_be_nil
+      @front_desk_3.find_available_room("12th Jun 3013", "14th Jun 3013", @front_desk_3.rooms).must_be_nil
 
     end
 
   end
 
-  describe "create_reservation_basic(start_date, end_date)" do
+  describe "create_reservation_basic(start_date, end_date, room_set)" do
 
     before do
-      @new_jan_3014_res = @front_desk_2.create_reservation_basic('2nd Jan 3014', '19th Jan 3014')
+      @new_jan_3014_res = @front_desk_2.create_reservation_basic('2nd Jan 3014', '19th Jan 3014', @front_desk_2.rooms)
     end
 
     it "generates a reservation for a given date range" do
@@ -283,7 +283,7 @@ describe "FrontDesk class" do
     end
 
     it "raises an error if no rooms are available in the desired date range." do
-      proc{ @front_desk_2.create_reservation_basic('11th Jun 3013','13th Jun 3013')}.must_raise StandardError
+      proc{ @front_desk_2.create_reservation_basic('11th Jun 3013','13th Jun 3013', @front_desk_2.rooms)}.must_raise StandardError
     end
   end
 
@@ -349,7 +349,7 @@ describe "FrontDesk class" do
   end
 
 
-  describe "check_block_feasibility(st_dt, end_dt, block_size)" do
+  describe "check_block_feasibility(st_dt, end_dt, room_set, block_size)" do
 
     before do
 
@@ -361,10 +361,10 @@ describe "FrontDesk class" do
 
       @front_desk_3.rooms = @three_rooms_identical_avail
 
-      @three_ident_feasible = @front_desk_3.check_block_feasibility('1st Mar 3015', '10th Mar 3015', 3)
+      @three_ident_feasible = @front_desk_3.check_block_feasibility('1st Mar 3015', '10th Mar 3015',@front_desk_3.rooms, 3)
 
 
-      @three_ident_infeas = @front_desk_3.check_block_feasibility('1st Nov 3015', '10th Nov 3015', 3)
+      @three_ident_infeas = @front_desk_3.check_block_feasibility('1st Nov 3015', '10th Nov 3015', @front_desk_3.rooms, 3)
 
     end
 
@@ -451,7 +451,7 @@ describe "FrontDesk class" do
 
     end
   end
-  describe "create_room_block(st_date, end_date, block_size, block_discount)" do
+  describe "create_room_block(st_date, end_date, block_size, room_set, block_discount)" do
 
     before do
       @room_3000_cs.add_reservation(@reservation_n1_c)
@@ -462,10 +462,9 @@ describe "FrontDesk class" do
 
       @front_desk_3.rooms = @three_rooms_identical_avail
 
-      @valid_block = @front_desk_3.create_room_block('1st Mar 3015', '10th Mar 3015', 3, 0.2)
+      @valid_block = @front_desk_3.create_room_block('1st Mar 3015', '10th Mar 3015', 3, @front_desk_3.rooms, 0.2)
 
 
-      # @three_ident_infeas = @front_desk_3.check_block_feasibility('1st Nov 3015', '10th Nov 3015', 3)
     end
 
     it "returns a hash exactly one key-value pair long, when enough rooms are available for the reservation" do
@@ -497,7 +496,52 @@ describe "FrontDesk class" do
 
     end
 
-    # check
+    it "has one instance of BlockRoom for every room in the block" do
+      @valid_block.values[0].length.must_equal 3
+    end
 
+    it "stores the blocks in FrontDesk's @blocks array" do
+      @front_desk_3.blocks.must_include @valid_block
+    end
+
+    it "marks the dates of the block as unavailable in the room's dates_unavailable hash" do
+
+      @room_3000_cs.dates_unavailable.keys.must_include "2822333"
+      @room_2000_bs.dates_unavailable.keys.must_include "2822332"
+      @room_1000_as.dates_unavailable.keys.must_include "2822329"
+    end
+  end
+  describe "check_availability_within_block(start_date, end_date, block_id)" do
+    before do
+      @room_3000_cs.add_reservation(@reservation_n1_c)
+      @room_3000_cs.add_reservation(@reservation_n2_c)
+      @room_3000_cs.add_reservation(@reservation_n3_c)
+
+      @three_rooms_identical_avail = [@room_1000_as, @room_2000_bs, @room_3000_cs]
+
+      @front_desk_3.rooms = @three_rooms_identical_avail
+
+      @valid_block = @front_desk_3.create_room_block('1st Mar 3015', '10th Mar 3015', 3, @front_desk_3.rooms, 0.2)
+      @valid_blocK_id = @valid_block.keys[0]
+
+      @block_search_result = @front_desk_3.check_availability_within_block('3rd Mar 3015', '7th Mar 3015', @valid_blocK_id)
+    end
+
+    it "returns an array" do
+      @block_search_result.must_be_kind_of Array
+    end
+
+    it 'returns a collection of room numbers for the rooms available between the specified dates' do
+
+      @block_search_result.must_include "1000-B"
+      @block_search_result.must_include "2000-B"
+      @block_search_result.must_include "3000-B"
+
+    end
+
+    it 'returns an empty array if no rooms are available between the specified dates' do
+
+      # COME BACK TO THIS AFTER YOU HAVE RESERVATION ADD WORKING
+    end
   end
 end
