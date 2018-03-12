@@ -11,13 +11,12 @@ module Hotel
     attr_reader :id, :total_nights, :total_reservation_cost
 
     @@last_id_base = 0
-    @@last_block_base = 0
 
     # The constant below, MIN_RES_IN_SEC, is the length of the minimum reservation, in seconds.  This figure was arrived at by calculating the number of seconds between an early-but-common check-out time (10:00 am) and the change of date at midnight.  The putative customer could, of course, change this to whatever they wanted.
     MIN_RES_IN_SEC = 36000
 
-    def initialize(start_date, end_date )
-      @id = assign_id(@@last_id_base)
+    def initialize(start_date, end_date)
+      @id = assign_id
       @start_date = DateTime.parse(start_date)
       @end_date = DateTime.parse(end_date)
       @hotel_room_id = nil
@@ -35,11 +34,10 @@ module Hotel
       if (@end_date.to_time.to_i - @start_date.to_time.to_i) < MIN_RES_IN_SEC #|| @start_date.to_time.to_i < Time.now.to_i
         raise StandardError.new("A reservation's end date must come after its start date, and it must be at least one night long.")
       end
-      @@last_id_base += 1
     end
 
-    def assign_id(base_id)
-      new_id_base = (base_id + 1).to_s
+    def assign_id
+      new_id_base = (@@last_id_base += 1).to_s
       zeroes_needed = 8 - new_id_base.length
       leading_zero_array = (1..zeroes_needed).collect {"0"}
       new_id = leading_zero_array.join.concat(new_id_base)

@@ -10,6 +10,7 @@ module Hotel
     attr_accessor   :rooms, :blocks
 
     TOTAL_ROOMS_IN_FACILITY = 20
+    @@last_block_base = 100
 
     def initialize
 
@@ -149,26 +150,29 @@ module Hotel
       return reservation_for_block
     end
 
-    # def create_room_block(st_date, end_date, block_size, block_discount)
-    #   feasability_result = check_block_feasibility(st_date, end_date, block_size)
-    #   if feasability_result.keys.include?(:no)
-    #     raise StandardError.new("There are not enough available rooms to create this block")
-    #   else
-    #     block_id = Hotel::Reservation.assign_id(Hotel::Reservation.last_block_base)
-    #     Hotel::Reservation.last_block_base += 1
-    #     rooms_available_for_block = feasability_result[:yes]
-    #     rooms_reserved_in_block = []
-    #     rooms_available_for_block block_size.times do |room_id|
-    #       room_for_block = locate_room_by_id(room_id)
-    #       placeholder_res = create_block_placeholder_reservation(st_date, end_date, room_id, block_id)
-    #       room_for_block.add_reservation(placeholder_res)
-    #       block_availability_object = Hotel::BlockRoom.new(room_id, block_id, block_discount, block_start, block_end)
-    #       rooms_reserved_in_block << block_availability_object
-    #     end
-    #     block = {block_id.to_sym => rooms_reserved_in_block}
-    #   end
-    #   return block
-    # end
+    def create_room_block(st_date, end_date, block_size, block_discount)
+      feasability_result = check_block_feasibility(st_date, end_date, block_size)
+      if feasability_result.keys.include?(:no)
+        raise StandardError.new("There are not enough available rooms to create this block")
+      else
+        block_id = @@last_block_base.to_s
+        @@last_block_base += 1
+        rooms_available_for_block = feasability_result[:yes]
+        room_surplus = rooms_available_for_block.length - block_size
+        as_many_rooms_as_needed = rooms_available_for_block.drop(room_surplus)
+        rooms_reserved_in_block = []
+        as_many_rooms_as_needed.each do |room_id|
+          room_for_block = locate_room_by_id(room_id)
+          placeholder_res = create_placeholder_res(st_date, end_date, room_id, block_id)
+          room_for_block.add_reservation(placeholder_res)
+          block_availability_object = Hotel::BlockRoom.new(room_id, block_id, block_discount, st_date, end_date)
+          rooms_reserved_in_block << block_availability_object
+        end
+        block = {block_id.to_sym => rooms_reserved_in_block}
+        @blocks << block
+      end
+      return block
+    end
 
     def check_availability_within_block(start_date, end_date, block_id)
     end

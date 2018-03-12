@@ -451,4 +451,53 @@ describe "FrontDesk class" do
 
     end
   end
+  describe "create_room_block(st_date, end_date, block_size, block_discount)" do
+
+    before do
+      @room_3000_cs.add_reservation(@reservation_n1_c)
+      @room_3000_cs.add_reservation(@reservation_n2_c)
+      @room_3000_cs.add_reservation(@reservation_n3_c)
+
+      @three_rooms_identical_avail = [@room_1000_as, @room_2000_bs, @room_3000_cs]
+
+      @front_desk_3.rooms = @three_rooms_identical_avail
+
+      @valid_block = @front_desk_3.create_room_block('1st Mar 3015', '10th Mar 3015', 3, 0.2)
+
+
+      # @three_ident_infeas = @front_desk_3.check_block_feasibility('1st Nov 3015', '10th Nov 3015', 3)
+    end
+
+    it "returns a hash exactly one key-value pair long, when enough rooms are available for the reservation" do
+
+      @valid_block.must_be_kind_of Hash
+      @valid_block.count.must_equal 1
+
+    end
+
+    it "Raises a StandardError when there are not enough rooms available for the block" do
+
+      proc{ @front_desk_3.create_room_block('1st Nov 3015', '10th Nov 3015', 3)}.must_raise StandardError
+
+    end
+
+    it "has a key that is a procedurally generated block id number in symbol look_up_per_night_price_for_room" do
+
+      @valid_block.keys.length.must_equal 1
+      @valid_block.keys[0].must_be_kind_of Symbol
+      @valid_block.keys[0].to_s.must_match /^\d+$/
+
+    end
+
+    it "has as its value an array of instances of BlockRoom" do
+
+      @valid_block.values.length.must_equal 1
+      @valid_block.values[0].must_be_kind_of Array
+      @valid_block.values[0].each {|element| element.must_be_instance_of Hotel::BlockRoom}
+
+    end
+
+    # check
+
+  end
 end
