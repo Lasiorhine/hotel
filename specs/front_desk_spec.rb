@@ -111,8 +111,9 @@ describe "FrontDesk class" do
     end
   end
 
+  # Note:  THE METHOD THAT CORRESPONDS TO THIS WAS REPLACED, PER THE 'HOTEL REVISITED' ASSIGNMENT, BY THE ONE TESTED IMMEDIATELY BELOW IT.
 
-  # describe "find_all_reservations_for_date(date)" do
+  #describe "find_all_reservations_for_date(date)" do
   #
   #   before do
   #     @room_1000_as.add_reservation(@res_1_fllws_n1_direct)
@@ -165,53 +166,48 @@ describe "FrontDesk class" do
 
       @front_desk_3.rooms = [@room_1000_as, @room_4000, @room_5000, @room_6000]
 
-      reservation_report_16_jun = @front_desk_3.report_overall_booking_status_for_date('16th Jun 3013')
+      @reservation_report_16_jun = @front_desk_3.report_overall_booking_status_for_date('16th Jun 3013')
 
     end
 
     it "outputs a hash, where the keys are the numbers of all the hotel's rooms, in string form" do
 
-      reservation_report_16_jun = @front_desk_3.find_all_reservations_for_date('16th Jun 3013')
+      @reservation_report_16_jun.must_be_kind_of Hash
+      @reservation_report_16_jun.length.must_equal 4
 
-      reservation_report_16_jun.must_be_kind_of Hash
-      reservation_report_16_jun.length.must_equal 4
+      @reservation_report_16_jun.keys.must_include "1000"
+      @reservation_report_16_jun.keys.must_include "5000"
+      @reservation_report_16_jun.keys.must_include "4000"
+      @reservation_report_16_jun.keys.must_include "6000"
 
-      reservation_report_16_jun.keys.must_include "1000"
-      reservation_report_16_jun.keys.must_include "5000"
-      reservation_report_16_jun.keys.must_include "4000"
-      reservation_report_16_jun.keys.must_include "6000"
-
-      reservation_report_16_jun.keys.wont_include "2"
-      reservation_report_16_jun.keys.wont_include "2000"
+      @reservation_report_16_jun.keys.wont_include "2"
+      @reservation_report_16_jun.keys.wont_include "2000"
 
     end
 
     it "outputs a hash where the value of each key is a hash containing two key-value pairs, one with a key of :am, and one with a key of :pm, which have values of either true or false depending on the room's reservation status" do
 
-      reservation_report_16_jun["1000"].must_be_kind_of Hash
-      reservation_report_16_jun["1000"].length.must_equal 2
-      reservation_report_16_jun["1000"].keys.must_include :am
-      reservation_report_16_jun["1000"].keys.must_include :pm
+      @reservation_report_16_jun["1000"].must_be_kind_of Hash
+      @reservation_report_16_jun["1000"].length.must_equal 2
+      @reservation_report_16_jun["1000"].keys.must_include :am
+      @reservation_report_16_jun["1000"].keys.must_include :pm
 
-      reservation_report_16_jun.dig("1000", :am).must_equal true
-      reservation_report_16_jun.dig("1000", :pm).must_equal true
+      @reservation_report_16_jun.dig("1000", :am).must_equal true
+      @reservation_report_16_jun.dig("1000", :pm).must_equal true
 
-      reservation_report_16_jun["5000"].must_be_kind_of Hash
-      reservation_report_16_jun["5000"].length.must_equal 2
-      reservation_report_16_jun["5000"].keys.must_include :am
-      reservation_report_16_jun["5000"].keys.must_include :pm
-      reservation_report_16_jun.dig("5000", :am).must_equal false
-      reservation_report_16_jun.dig("5000", :pm).must_equal true
+      @reservation_report_16_jun["5000"].must_be_kind_of Hash
+      @reservation_report_16_jun["5000"].length.must_equal 2
+      @reservation_report_16_jun["5000"].keys.must_include :am
+      @reservation_report_16_jun["5000"].keys.must_include :pm
+      @reservation_report_16_jun.dig("5000", :am).must_equal false
+      @reservation_report_16_jun.dig("5000", :pm).must_equal true
 
     end
 
     it "For a room with no bookings on a given date, it returns a hash with the room's number as the key, and the string 'no bookings' as the value." do
 
-      reservation_report_16_jun["4000"].must_be_kind_of Hash
-      reservation_report_16_jun["4000"].length.must_equal 1
-      reservation_report_16_jun["4000"].must_equal "no bookings"
-      reservation_report_16_jun["4000"].keys.wont_include :am
-      reservation_report_16_jun["4000"].keys.wont_include :pm
+      @reservation_report_16_jun["4000"].must_be_kind_of String
+      @reservation_report_16_jun["4000"].must_equal "no bookings"
 
     end
 

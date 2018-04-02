@@ -85,53 +85,10 @@ PART I:  SHOPPING CART, ETC:
 
 PART II:  REVISITING HOTEL:
 
-A.  Preface:  
+  For this project, I chose to work on the program's room availability reporting mechanics. (Note that this is far from the worst problem that my implementation of Hotel has-- I chose this because it felt like a finite task with an achievable goal, not because it was the code's most important issue.)
 
-While I did lots and lots of things wrong in Hotel, the class interdependence and coupling were among the least-wrong aspects of the project.  I actually tried really hard to design my Reservation class so that it could be expanded to reserve things other than rooms, just as an exercise for myself-- and the comments I got back from Kari seem to support my perception of the project:  Overcomplicated and messy, yes: Tightly coupled classes, no: Single responsibility problems: Mostly no on the class level, though (in my opinion) OMFG yes, in some places, on the method level.   
+  In the previous implementation, FrontDesk generated a report of bookings for a given date by going through all the instances of Room, and using one of Room's class methods (report_reservations_for_day) to look at all the instances of Reservation held by a given room, checking each Reservation instance's @days_booked_am_and_pm variable for matching dates.  In other words, there was a multi-layered class entanglement here, and it had a really rotten time complexity to boot.  
 
-A large part of the excessive tangliness and all or nearly all of the moments of bad class interdependence are, IMO, largely fallout largely fallout from my having made a bad choice of data structures, w/re storing information about rooms' bookings and date availability, and then cleaving unto those poorly-chosen data structures until the very bitter end-- and fixing the bad data structure at this point, even in the limited way this assignment suggests, would amount to very major surgery, both in terms of rewriting production code and in terms of reconceptualizing and redeveloping tests.
+  To improve this, I created a different method (report_reservation_status_for_day) within Room that looks, not at any of Reservation's class variables, but at Room's own @dates_unavailable variable.  (The new method then produces a hash where the key is the room's number, and the value is its booking status for the query date.)
 
-Given that, I decided that the best way to complete this assignment without letting its scope expand out of control was to finish the last class (BlockRoom), and to make sure that it stands alone and is loosely coupled to the other classes, in keeping with good OO programming principles.
-
-B.  Hotel Revision Prompts:
-
-  1.  Reservation:    
-
-      What is this class's responsibility?
-
-          An instance of Reservation is, in essence, a collection of dates for which something (in this case, a hotel room) is reserved.
-
-          It can calculate its own length and its own cost.
-
-      Is this class responsible for exactly one thing?
-
-          Yes.  It just knows its own dates, and based on them, it can calculate its own length and its own price.
-
-
-      Does this class take on any responsibility that should be delegated to lower-level classes?
-
-          It is the lowest level class in this project, so no.
-
-      Is there code in other classes that directly manipulates this class's instance variables?
-
-
-  2.  Room:  
-
-      What is this class's responsibility?  
-
-        Room holds its own reservations as an array, and it knows the dates for which it is booked, and using these, it can decide whether to accept or reject a new reservation.  
-
-      Is this class responsible for exactly one thing?
-
-        Yes.  It just holds its own bookings, and uses that information to accept or reject new bookings.
-
-
-      Does this class take on any responsiblity that should be delegated to lower-level classes?
-
-        It does, currently, have some (as-yet unused)
-
-  3.    Front_desk:
-
-      What is this class's responsibility?
-
-        Front desk is the equivanent of RideShare's Dispatcher class-- it holds all the instances of Room, and it
+  I also created a new reporting method in FrontDesk (report_overall_booking_status_for_date(date)) that uses Room's new method, report_reservation_status_for_day, to generate its contents, instead of having Room's older report_reservations_for_day(date_julian) read from Reservation's @days_booked_am_and_pm variable.  

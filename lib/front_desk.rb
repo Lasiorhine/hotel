@@ -46,39 +46,11 @@ module Hotel
     #   return overall_report
     # end
 
-    # def report_reservation_status_for_date(date)
-    #   query_date = DateTime.parse(date).jd.to_s
-    #   overall_report = {}
-    #   @rooms.each do |room|
-    #     per_room_report = {}
-    #     room.report_reservation_status_for_day(query_date)
-    #
-    #
-    #     unless per_room_report == nil
-    #       resv_id_array = []
-    #       per_room_report.each {|reservation| resv_id_array << reservation.id }
-    #       per_room_report = {room.room_number => resv_id_array}
-    #       overall_report.merge!(per_room_report)
-    #     end
-    #   end
-    #   return overall_report
-    # end
-
-
-    def report_reservation_status_for_date(date)
+    def report_overall_booking_status_for_date(date)
       query_date = DateTime.parse(date).jd.to_s
       overall_report = {}
       @rooms.each do |room|
-        per_room_report = {}
-        room.report_reservation_status_for_day(query_date)
-
-
-        unless per_room_report == nil
-          resv_id_array = []
-          per_room_report.each {|reservation| resv_id_array << reservation.id }
-          per_room_report = {room.room_number => resv_id_array}
-          overall_report.merge!(per_room_report)
-        end
+        overall_report.merge!(room.report_reservation_status_for_day(query_date))
       end
       return overall_report
     end
