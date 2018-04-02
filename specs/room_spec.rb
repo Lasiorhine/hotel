@@ -59,7 +59,49 @@ describe "Room class" do
 
   end
 
-  describe "report_reservations_for_day(date_julian)" do
+  # THIS VERSION OF THIS METHOD WAS REMOVED FOR PURPOSES OF THE
+  # 'HOTEL REVISITED' ASSIGNMENT.  ITS REPLACEMENT IS IMMEDIATELY BELOW.
+
+
+  # describe "report_reservations_for_day(date_julian)" do
+  #   before do
+  #
+  #     @room_300_nominal.add_reservation(@reservation_n1_nominal)
+  #     @room_300_nominal.add_reservation(@reservation_1_follows_n1_directly)
+  #     @room_300_nominal.add_reservation(@reservation_n3_nominal)
+  #
+  #   end
+  #
+  #   it "accurately reports reservations for a day on which there is a single reservation" do
+  #
+  #     jun_12_reservations = @room_300_nominal.report_reservations_for_day("2821698")
+  #     jun_12_reservations.must_be_kind_of Array
+  #     jun_12_reservations.length.must_equal 1
+  #     jun_12_reservations.must_include @reservation_n1_nominal
+  #
+  #   end
+  #
+  #   it "accurately reports reservations when run for a day on which one reservation begins and another ends" do
+  #
+  #     jun_16_reservations = @room_300_nominal.report_reservations_for_day("2821702")
+  #     jun_16_reservations.length.must_equal 2
+  #     jun_16_reservations.must_be_kind_of Array
+  #     jun_16_reservations.must_include @reservation_n1_nominal
+  #     jun_16_reservations.must_include @reservation_1_follows_n1_directly
+  #
+  #   end
+  #
+  #   it "returns nil if a room has no reservations for a given day." do
+  #
+  #     xmas_3075_reservations = @room_300_nominal.report_reservations_for_day("2844539")
+  #
+  #     xmas_3075_reservations.must_be_nil
+  #
+  #   end
+  # end
+
+
+  describe "report_reservation_status_for_day(date_julian)" do
     before do
 
       @room_300_nominal.add_reservation(@reservation_n1_nominal)
@@ -68,33 +110,61 @@ describe "Room class" do
 
     end
 
-    it "accurately reports reservations for a day on which there is a single reservation" do
+    it "accurately reports reservations for a day that is reserved for both morning and evening" do
 
-      jun_12_reservations = @room_300_nominal.report_reservations_for_day("2821698")
-      jun_12_reservations.must_be_kind_of Array
+      jun_12_reservations = @room_300_nominal.report_reservation_status_for_day("2821698")
+      jun_12_reservations.must_be_kind_of Hash
       jun_12_reservations.length.must_equal 1
-      jun_12_reservations.must_include @reservation_n1_nominal
+      jun_12_reservations.keys.must_include "300"
+      jun_12_reservations.dig("300", :am).must_equal true
+      jun_12_reservations.dig("300", :pm).must_equal true
 
     end
 
     it "accurately reports reservations when run for a day on which one reservation begins and another ends" do
 
-      jun_16_reservations = @room_300_nominal.report_reservations_for_day("2821702")
-      jun_16_reservations.length.must_equal 2
-      jun_16_reservations.must_be_kind_of Array
-      jun_16_reservations.must_include @reservation_n1_nominal
-      jun_16_reservations.must_include @reservation_1_follows_n1_directly
+      jun_16_reservations = @room_300_nominal.report_reservation_status_for_day("2821702")
+      jun_16_reservations.must_be_kind_of Hash
+      jun_16_reservations.length.must_equal 1
+      jun_16_reservations.keys.must_include "300"
+      jun_16_reservations.dig("300", :am).must_equal true
+      jun_16_reservations.dig("300", :pm).must_equal true
 
     end
 
-    it "returns nil if a room has no reservations for a given day." do
+    it "accurately reports reservation status for a room that was not reserved for the night before a new reservation begins" do
 
-      xmas_3075_reservations = @room_300_nominal.report_reservations_for_day("2844539")
+      jun_10_reservations =  @room_300_nominal.report_reservation_status_for_day("2821696")
+      jun_10_reservations.must_be_kind_of Hash
+      jun_10_reservations.length.must_equal 1
+      jun_10_reservations.keys.must_include "300"
+      jun_10_reservations.dig("300", :am).must_equal false
+      jun_10_reservations.dig("300", :pm).must_equal true
 
-      xmas_3075_reservations.must_be_nil
+    end
+
+    it "accurately reports reservation status for a room that is not reserved for the night after a reservation ends" do
+
+      jul_3_reservations =  @room_300_nominal.report_reservation_status_for_day("2821718")
+      jul_3_reservations.must_be_kind_of Hash
+      jul_3_reservations.length.must_equal 1
+      jul_3_reservations.keys.must_include "300"
+      jul_3_reservations.dig("300", :am).must_equal true
+      jul_3_reservations.dig("300", :pm).must_equal false
+
+    end
+
+    it "returns 'no bookings' if a room has no reservations for a given day." do
+
+      xmas_3075_reservations = @room_300_nominal.report_reservation_status_for_day("2844539")
+      xmas_3075_reservations.must_be_kind_of Hash
+      xmas_3075_reservations.length.must_equal 1
+      xmas_3075_reservations.keys.must_include "300"
+      xmas_3075_reservations["300"].must_equal "no bookings"
 
     end
   end
+
 
   describe "can_accept_reservation?(reservation)" do
 

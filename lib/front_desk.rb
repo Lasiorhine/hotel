@@ -29,12 +29,50 @@ module Hotel
       return room_array
     end
 
-    def find_all_reservations_for_date(date)
+
+    # def find_all_reservations_for_date(date)
+    #   query_date = DateTime.parse(date).jd.to_s
+    #   overall_report = {}
+    #   @rooms.each do |room|
+    #     per_room_report = nil
+    #     per_room_report = room.report_reservations_for_day(query_date)
+    #     unless per_room_report == nil
+    #       resv_id_array = []
+    #       per_room_report.each {|reservation| resv_id_array << reservation.id }
+    #       per_room_report = {room.room_number => resv_id_array}
+    #       overall_report.merge!(per_room_report)
+    #     end
+    #   end
+    #   return overall_report
+    # end
+
+    # def report_reservation_status_for_date(date)
+    #   query_date = DateTime.parse(date).jd.to_s
+    #   overall_report = {}
+    #   @rooms.each do |room|
+    #     per_room_report = {}
+    #     room.report_reservation_status_for_day(query_date)
+    #
+    #
+    #     unless per_room_report == nil
+    #       resv_id_array = []
+    #       per_room_report.each {|reservation| resv_id_array << reservation.id }
+    #       per_room_report = {room.room_number => resv_id_array}
+    #       overall_report.merge!(per_room_report)
+    #     end
+    #   end
+    #   return overall_report
+    # end
+
+
+    def report_reservation_status_for_date(date)
       query_date = DateTime.parse(date).jd.to_s
       overall_report = {}
       @rooms.each do |room|
-        per_room_report = nil
-        per_room_report = room.report_reservations_for_day(query_date)
+        per_room_report = {}
+        room.report_reservation_status_for_day(query_date)
+
+
         unless per_room_report == nil
           resv_id_array = []
           per_room_report.each {|reservation| resv_id_array << reservation.id }
@@ -75,7 +113,6 @@ module Hotel
 
     def locate_room_by_id(query_rm_numb)
       target_room = @rooms.find {|room| room.room_number == query_rm_numb}
-      return target_room
     end
 
     def look_up_per_night_price_for_room(query_room_numb)
@@ -90,6 +127,7 @@ module Hotel
       else
         new_reservation = Hotel::Reservation.new(start_date, end_date)
       end
+
       new_reservation.hotel_room_id = room_numb_for_new_res
 
       new_reservation.per_night_price = look_up_per_night_price_for_room(room_numb_for_new_res)
@@ -181,13 +219,13 @@ module Hotel
     #I ALMOST GOT THROGUH WAVE 3, but at 6:00 am, I just had nothing left.
 
 
-    # def create_reservation_within_block(start_date, end_date, block_id)
-    #   rooms_available = check_availability_within_block(start_date, end_date, block_id)
-    #   room_instances_for_reservation = rooms_available.map {|id| @blocks.find }
-    #
-    #
-    #   new_block_reservation = create_reservation_basic(start_date, end_date, rooms_available)
-    #   return new_block_reservation
-    # end
+    def create_reservation_within_block(start_date, end_date, block_id)
+      rooms_available = check_availability_within_block(start_date, end_date, block_id)
+      room_instances_for_reservation = rooms_available.map {|id| @blocks.find }
+
+
+      new_block_reservation = create_reservation_basic(start_date, end_date, rooms_available)
+      return new_block_reservation
+    end
   end
 end

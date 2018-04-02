@@ -40,6 +40,11 @@ module Hotel
       return report
     end
 
+    def report_reservation_status_for_day(date_julian)
+      resvs_for_day = {@room_number => @dates_unavailable.fetch(date_julian, "no bookings")}
+    end
+
+
     def can_accept_reservation?(reservation)
       reservation_acceptable = {:accept => true, :resolve_conflict => false}
       resolve_date_conflict = []

@@ -111,7 +111,51 @@ describe "FrontDesk class" do
     end
   end
 
-  describe "find_all_reservations_for_date(date)" do
+
+  # describe "find_all_reservations_for_date(date)" do
+  #
+  #   before do
+  #     @room_1000_as.add_reservation(@res_1_fllws_n1_direct)
+  #     @room_4000.add_reservation(@res_2_overlps_n1_begin)
+  #     @room_5000.add_reservation(@res_5_fllws_n1_precedes_n2)
+  #     @room_6000.add_reservation(@res_6_singleton)
+  #
+  #     @front_desk_3.rooms = [@room_1000_as, @room_4000, @room_5000, @room_6000]
+  #   end
+  #
+  #   it "outputs a hash, where the keys are the numbers of reserved rooms, in string form, and the value of each is an array containing the id numbers of their reservations" do
+  #
+  #     reservation_report_16_jun = @front_desk_3.find_all_reservations_for_date('16th Jun 3013')
+  #
+  #     reservation_report_16_jun.must_be_kind_of Hash
+  #     reservation_report_16_jun.count.must_equal 2
+  #
+  #     reservation_report_16_jun.keys.must_include "1000"
+  #     reservation_report_16_jun.keys.must_include "5000"
+  #
+  #     reservation_report_16_jun.keys.wont_include "4000"
+  #     reservation_report_16_jun.keys.wont_include "6000"
+  #
+  #     reservation_report_16_jun["1000"].must_be_kind_of Array
+  #     reservation_report_16_jun["1000"].must_include @reservation_n1_a.id
+  #     reservation_report_16_jun["1000"].must_include @res_1_fllws_n1_direct.id
+  #
+  #     reservation_report_16_jun["5000"].must_be_kind_of Array
+  #     reservation_report_16_jun["5000"].must_include @res_5_fllws_n1_precedes_n2.id
+  #
+  #   end
+  #
+  #   it "returns an empty hash when there are no rooms reserved for a given day" do
+  #
+  #     reservation_report_1_jan = @front_desk_3.find_all_reservations_for_date('1st  Jan 4047')
+  #
+  #     reservation_report_1_jan.must_be_kind_of Hash
+  #     reservation_report_1_jan.must_be_empty
+  #
+  #   end
+  # end
+
+  describe "report_overall_booking_status_for_date(date)" do
 
     before do
       @room_1000_as.add_reservation(@res_1_fllws_n1_direct)
@@ -120,39 +164,62 @@ describe "FrontDesk class" do
       @room_6000.add_reservation(@res_6_singleton)
 
       @front_desk_3.rooms = [@room_1000_as, @room_4000, @room_5000, @room_6000]
+
+      reservation_report_16_jun = @front_desk_3.report_overall_booking_status_for_date('16th Jun 3013')
+
     end
 
-    it "outputs a hash, where the keys are the numbers of reserved rooms, in string form, and the value of each is an array containing the id numbers of their reservations" do
+    it "outputs a hash, where the keys are the numbers of all the hotel's rooms, in string form" do
 
       reservation_report_16_jun = @front_desk_3.find_all_reservations_for_date('16th Jun 3013')
 
       reservation_report_16_jun.must_be_kind_of Hash
-      reservation_report_16_jun.count.must_equal 2
+      reservation_report_16_jun.length.must_equal 4
 
       reservation_report_16_jun.keys.must_include "1000"
       reservation_report_16_jun.keys.must_include "5000"
+      reservation_report_16_jun.keys.must_include "4000"
+      reservation_report_16_jun.keys.must_include "6000"
 
-      reservation_report_16_jun.keys.wont_include "4000"
-      reservation_report_16_jun.keys.wont_include "6000"
-
-      reservation_report_16_jun["1000"].must_be_kind_of Array
-      reservation_report_16_jun["1000"].must_include @reservation_n1_a.id
-      reservation_report_16_jun["1000"].must_include @res_1_fllws_n1_direct.id
-
-      reservation_report_16_jun["5000"].must_be_kind_of Array
-      reservation_report_16_jun["5000"].must_include @res_5_fllws_n1_precedes_n2.id
+      reservation_report_16_jun.keys.wont_include "2"
+      reservation_report_16_jun.keys.wont_include "2000"
 
     end
 
-    it "returns an empty hash when there are no rooms reserved for a given day" do
+    it "outputs a hash where the value of each key is a hash containing two key-value pairs, one with a key of :am, and one with a key of :pm, which have values of either true or false depending on the room's reservation status" do
 
-      reservation_report_1_jan = @front_desk_3.find_all_reservations_for_date('1st  Jan 4047')
+      reservation_report_16_jun["1000"].must_be_kind_of Hash
+      reservation_report_16_jun["1000"].length.must_equal 2
+      reservation_report_16_jun["1000"].keys.must_include :am
+      reservation_report_16_jun["1000"].keys.must_include :pm
 
-      reservation_report_1_jan.must_be_kind_of Hash
-      reservation_report_1_jan.must_be_empty
+      reservation_report_16_jun.dig("1000", :am).must_equal true
+      reservation_report_16_jun.dig("1000", :pm).must_equal true
+
+      reservation_report_16_jun["5000"].must_be_kind_of Hash
+      reservation_report_16_jun["5000"].length.must_equal 2
+      reservation_report_16_jun["5000"].keys.must_include :am
+      reservation_report_16_jun["5000"].keys.must_include :pm
+      reservation_report_16_jun.dig("5000", :am).must_equal false
+      reservation_report_16_jun.dig("5000", :pm).must_equal true
 
     end
+
+    it "For a room with no bookings on a given date, it returns a hash with the room's number as the key, and the string 'no bookings' as the value." do
+
+      reservation_report_16_jun["4000"].must_be_kind_of Hash
+      reservation_report_16_jun["4000"].length.must_equal 1
+      reservation_report_16_jun["4000"].must_equal "no bookings"
+      reservation_report_16_jun["4000"].keys.wont_include :am
+      reservation_report_16_jun["4000"].keys.wont_include :pm
+
+    end
+
   end
+
+
+
+
 
   describe "report_all_available_rooms(start_dt, end_dt, room_set)" do
 
