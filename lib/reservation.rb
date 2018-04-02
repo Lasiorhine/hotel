@@ -85,6 +85,10 @@ module Hotel
       all_days_in_use = start_and_end_days.merge(full_days_in_use.to_h)
     end
 
+    def calculate_total_nights
+      (@end_date.to_date - @start_date.to_date).to_i
+    end
+
     def calculate_reservation_price
        (@total_nights * @per_night_price).round(2)
     end

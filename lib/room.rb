@@ -46,7 +46,7 @@ module Hotel
       unless @dates_unavailable.empty?
         unless reservation_acceptable[:accept] == false
           @dates_unavailable.each do |booked_date|
-            # Note:  I originally had the am/pm conflict checking written as a single, long, one-line thing, but that made minitest loose its mind, so now it's in all these little chunks.
+            # Note:  I originally had the am/pm conflict checking written as a single, long, one-line thing, but that made minitest lose its mind, so now it's in all these little chunks.
             date = booked_date
             if reservation.days_booked_am_and_pm.keys.include?(date[0])
               am_conflict = nil
@@ -91,11 +91,9 @@ module Hotel
       # reservations. This keeps the can_accept_reservation? method
       # from going nuts in cases of abutting reservations.
       output_array = conflict_array.map {|d| {d.keys[0] => {:am => true, :pm => true}}}
-      return output_array
     end
 
     def add_reservation(new_reservation)
-
       adding_instructions = can_accept_reservation?(new_reservation)
       if adding_instructions[:accept] == false
         raise StandardError.new ("You are trying to add a reservation that conflicts with a pre-existing reservation")
@@ -106,9 +104,7 @@ module Hotel
       dates_with_conflicts_fixed = nil
       if adding_instructions[:resolve_conflict].kind_of? Array
         dates_with_conflicts_fixed = fix_conflicting_date(adding_instructions[:resolve_conflict])
-      #  binding.pry
         dates_with_conflicts_fixed.each {|date| @dates_unavailable.merge!(date)}
-      #  binding.pry
       end
     end
   end

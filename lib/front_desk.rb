@@ -29,11 +29,6 @@ module Hotel
       return room_array
     end
 
-    def report_all_rooms
-      all_rooms = @rooms
-      return all_rooms
-    end
-
     def find_all_reservations_for_date(date)
       query_date = DateTime.parse(date).jd.to_s
       overall_report = {}
@@ -68,7 +63,6 @@ module Hotel
     end
 
     def find_available_room(start_d, end_d, room_set)
-
       room_to_assign = nil
       rooms_available = report_all_available_rooms(start_d, end_d, room_set)
       unless rooms_available.empty?
@@ -79,14 +73,14 @@ module Hotel
       return room_to_assign
     end
 
-    def look_up_per_night_price_for_room(query_room_numb)
-      target_room = @rooms.find {|room| room.room_number == query_room_numb}
-      target_price = target_room.rate_with_discount
-    end
-
     def locate_room_by_id(query_rm_numb)
       target_room = @rooms.find {|room| room.room_number == query_rm_numb}
       return target_room
+    end
+
+    def look_up_per_night_price_for_room(query_room_numb)
+      target_room = locate_room_by_id(query_room_numb)
+      target_price = target_room.rate_with_discount
     end
 
     def create_reservation_basic(start_date, end_date, room_set)

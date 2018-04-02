@@ -73,6 +73,10 @@ describe "FrontDesk class" do
       @front_desk_0.rooms.must_be_kind_of Array
       @front_desk_0.rooms.each {|element| element.must_be_instance_of Hotel::Room}
       @front_desk_0.rooms.count.must_equal 20
+
+      @front_desk_0.rooms.each_with_index do |room, index|
+        room.room_number.must_equal (index + 1).to_s
+      end
     end
 
     it "has an instance variable, @blocks, which begins as an empty array" do
@@ -102,20 +106,6 @@ describe "FrontDesk class" do
       rooms_in_order = @test_rooms_1.sort_by {|room| room.room_number.to_i}
       rooms_in_order.length.must_equal 20
       rooms_in_order.each_with_index do |room, index|
-        room.room_number.must_equal (index + 1).to_s
-      end
-    end
-  end
-
-  describe "report_all_rooms" do
-
-    it "reports a complete list of all the rooms in the facility" do
-
-      room_report = @front_desk_1.report_all_rooms.sort_by {|room| room.room_number.to_i}
-
-      room_report.must_be_kind_of Array
-      room_report.length.must_equal 20
-      room_report.each_with_index do |room, index|
         room.room_number.must_equal (index + 1).to_s
       end
     end
